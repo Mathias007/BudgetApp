@@ -19,16 +19,9 @@ namespace BudgetApp
         {
             using FileStream createStream = File.Create(GetDatabasePath());
         }
-        public async Task ShowTransactionList() 
-        {
-            using FileStream openStream = File.OpenRead(GetDatabasePath());
-            Transaction[]? transactionsList =
-                await JsonSerializer.DeserializeAsync<Transaction[]>(openStream);
 
-            //Console.WriteLine($"ID: {transaction?.TransactionID}");
-            //Console.WriteLine($"Category: {transaction?.TransactionCategory}");
-            //Console.WriteLine($"Date: {transaction?.TransactionDate}");               
-        }
+        public Dictionary<int, Transaction> LoadDataFromDB() => throw new NotImplementedException();
+        public Dictionary<int, Transaction> SaveDataToDB() => throw new NotImplementedException();
         public double CalculateBalanceValue() => throw new NotImplementedException();
         public double CalculateBudgetStructure() => throw new NotImplementedException();
     }
