@@ -34,40 +34,52 @@ namespace BudgetApp
             _date = date;
         }
 
-        public async Task AddTransactionToDB(Transaction addingTransaction) {
-            using FileStream createStream = File.Create(GetDatabasePath());
-            await JsonSerializer.SerializeAsync(createStream, addingTransaction);
-            await createStream.DisposeAsync();
-
-            Console.WriteLine(File.ReadAllText(GetDatabasePath()));
-
-        }
-        public Transaction FindTransactionByID(int id) {
+        public Transaction CreateNewTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date)
+        {
             var testTransaction = new Transaction
             (
                  0,
                  new Category("income", "transaction"),
                  2137.5,
                  "Testowa transakcja",
-                 new User("Jan", "Kowalski", true),
+                 new User("Jan", "Kowalski", true, true),
                  DateTime.Parse("2019-08-01")
             );
 
-            // method to implement
+            // method to implement - look at AddTransactions in Menu class (separate logic)
+
+            return testTransaction;
+
+        }
+        public Transaction FindTransactionByID(int id)
+        {
+            var testTransaction = new Transaction
+            (
+                 0,
+                 new Category("income", "transaction"),
+                 2137.5,
+                 "Testowa transakcja",
+                 new User("Jan", "Kowalski", true, true),
+                 DateTime.Parse("2019-08-01")
+            );
+
+            // method to implement look at EditTransactions in Menu class (separate logic)
 
             return testTransaction;
         }
-        public Transaction ModifySelectedTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date) {
+        public Transaction ModifySelectedTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date)
+        {
             Transaction modyfyingTransaction = FindTransactionByID(id);
 
-            // method to implement
+            // method to implement look at EditTransactions in Menu class (separate logic)
 
             return modyfyingTransaction;
         }
-        public Transaction RemoveSelectedTransaction(int id) {
+        public Transaction RemoveSelectedTransaction(int id)
+        {
             Transaction removingTransaction = FindTransactionByID(id);
 
-            // method to implement
+            // method to implement look at EditTransactions in Menu class (separate logic)
 
             return removingTransaction;
         }
