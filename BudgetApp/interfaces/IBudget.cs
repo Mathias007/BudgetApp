@@ -8,8 +8,9 @@ namespace BudgetApp
 {
     interface IBudget
     {
-        string SelectedMonth { get; set; } 
-        double Balance { get; set; }
+        Dictionary<int,Transaction> BudgetData { get; set; }
+        string BudgetSelector { get; set; } 
+        double BudgetBalance { get; set; }
         double[] BudgetStructure { get; set; }
 
     }

@@ -12,7 +12,7 @@ namespace BudgetApp
         User TransactionUser { get; set; }
         DateTimeOffset TransactionDate { get; set; }
 
-        Task AddTransactionToDB(Transaction transaction);
+        Transaction CreateNewTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date);
         Transaction FindTransactionByID(int id);
         Transaction ModifySelectedTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date);
         Transaction RemoveSelectedTransaction(int id);

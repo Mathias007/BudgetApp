@@ -10,7 +10,8 @@ namespace BudgetApp
     {
         string GetDatabasePath();
         void CreateBudgetDB();
-        Task ShowTransactionList();
+        public Dictionary<int, Transaction> LoadDataFromDB();
+        public Dictionary<int, Transaction> SaveDataToDB();
         double CalculateBalanceValue();
         double CalculateBudgetStructure();
     }
