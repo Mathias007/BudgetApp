@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    class Budget : BudgetService, IBudget
+    public class Budget : BudgetService, IBudget
     {
         public Dictionary<int, Transaction> BudgetData { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string BudgetSelector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
