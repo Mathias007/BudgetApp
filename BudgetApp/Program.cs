@@ -16,20 +16,33 @@ namespace BudgetApp
             };
 
             Budget budget = new();
+            Menu menu = new();
 
-            Transaction firstTransaction = new(0,
-                 new Category("income", "transaction"),
+            Category firstCategory = new("income", "Wynagrodzenie");
+            User firstUser = new("Jan", "Kowalski", true, true);
+
+            Transaction firstTransaction = new(
+                 0,
+                 firstCategory,
                  2137.5,
                  "Testowa transakcja",
-                 new User("Jan", "Kowalski", true, true),
-                 DateTime.Parse("2019-08-01"));
+                 firstUser,
+                 DateTime.Parse("2019-08-01")
+            );
 
-            Dictionary<int, Transaction> dictionary = new();
+            Dictionary<int, Transaction> transactions = new();
+            Dictionary<int, Category> categories = new();
+            Dictionary<int, User> users = new();
 
-            dictionary.Add(firstTransaction.TransactionID, firstTransaction);
-            Budget.SaveTransactionList(dictionary, fileNames["Transactions"]);
+            categories.Add(0, firstCategory);
+            users.Add(0, firstUser);
+            transactions.Add(firstTransaction.TransactionID, firstTransaction);
+
+            menu.HandleMenu(users, transactions, categories, firstUser);
+
+            Budget.SaveTransactionList(transactions, fileNames["Transactions"]);
             Dictionary<int, Transaction> a = Budget.LoadTransactionList(fileNames["Transactions"]);
-            a[0].PrintProperties();
+            a[1].PrintProperties();
         }
     }
 }

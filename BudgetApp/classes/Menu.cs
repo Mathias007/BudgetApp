@@ -14,7 +14,8 @@ namespace BudgetApp
             { "[w]", "Wyświetl listę domowników" },
             { "[s]", "Dodaj nowe transakcje" },
             { "[a]", "Edytuj i usuwaj istniejące transakcje" },
-            { "[d]", "Wyświetl transakcje" }
+            { "[d]", "Wyświetl transakcje" },
+            { "[f]", "Wyświetl listę kategorii"}
         };
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
@@ -27,7 +28,31 @@ namespace BudgetApp
 
             foreach (KeyValuePair<int, User> record in usersList)
             {
-                Console.WriteLine($" + {record.Key}: {record.Value}");
+                Console.WriteLine(
+                    $" + {record.Key}: " +
+                    $"{record.Value.UserFirstName} {record.Value.UserLastName} " +
+                    $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
+                    $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("\n");
+        }
+
+        public void ShowCategoriesList(Dictionary<int,Category> categoriesList)
+        {
+            Console.WriteLine("Lista wszystkich kategorii:");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            foreach (KeyValuePair<int, Category> record in categoriesList)
+            {
+                if (record.Value.CategoryType == "expense") Console.ForegroundColor = ConsoleColor.Red;
+                else if (record.Value.CategoryType == "income") Console.ForegroundColor = ConsoleColor.Green;
+                else Console.ForegroundColor = ConsoleColor.Yellow;
+
+                Console.WriteLine(
+                        $" + {record.Key}: " +
+                        $"{record.Value.CategoryName} ({record.Value.CategoryType})");
+                Console.ForegroundColor = ConsoleColor.Gray;
             }
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
@@ -37,106 +62,81 @@ namespace BudgetApp
         {
             int transactionID = transactionsList.Keys.Max() + 1;
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer ");
-            foreach (KeyValuePair<int, Category> record in categoriesList)
-            {
-                Console.WriteLine($" + {record.Key}: {record.Value}");
-            }
-            int selectedCategoryID = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("Wprowadź kwotę PLN (wartość bezwzględna - w przypadku wyboru kategorii wydatku liczba zostanie potraktowana jako ujemna): ");
-            double amount = double.Parse(Console.ReadLine());
-
-            Console.WriteLine("Wprowadź opis transakcji (pole opcjonalne): ");
-            string description = Console.ReadLine();
-
-            DateTimeOffset date = DateTimeOffset.Now;
-
-            Transaction addingTransaction = new(
-                transactionID,
-                categoriesList[selectedCategoryID],
-                amount,
-                description,
-                user,
-                date
-            );
+            Transaction addingTransaction = Transaction.CreateNewTransaction(transactionID, categoriesList, user);
 
             transactionsList.Add(transactionID, addingTransaction);
+
+            Console.WriteLine("Transakcja pomyślnie dodana!");
+            addingTransaction.PrintProperties();
         }
 
         public void EditTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
-            Console.WriteLine("Czy chcesz wyświetlić listę transakcji przed edycją? [T/N]");
+            Console.Write("Czy chcesz wyświetlić listę transakcji przed edycją? [T/N]");
             string showingTransactionsList = Console.ReadLine();
-
             if (showingTransactionsList.ToUpper() == "T") ShowTransactions(transactionsList, categoriesList, user);
 
-            Console.WriteLine("Wpisz ID poszukiwanej transakcji: ");
+            Console.Write("Wpisz ID poszukiwanej transakcji: ");
             int selectedTransactionID = int.Parse(Console.ReadLine());
 
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            if (transactionsList.ContainsKey(selectedTransactionID))
-            {
+            Transaction transactionToEdit = Transaction.FindTransactionByID(transactionsList);
+
                 Console.WriteLine("Co zamierzasz zrobić z wybraną transakcją? [e] - edycja, [d] - usuwanie");
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
+
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.E:
-                        // EDYCJA DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)
+                        // EDYCJA DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)                        
+                        Transaction newTransactionData = Transaction.ModifySelectedTransaction(transactionToEdit, categoriesList);
+                        transactionsList[selectedTransactionID] = newTransactionData;
+                        Console.WriteLine("Edycja zakończona!");
+                        newTransactionData.PrintProperties();
                         break;
                     case ConsoleKey.D:
                         // USUWANIE DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)
+                        Transaction.RemoveSelectedTransaction(selectedTransactionID, transactionsList);
+                        Console.WriteLine("Usuwanie zakończone!");
                         break;
                     default:
                         Console.WriteLine("Nieprawidłowy wybór");
                         ManageProgramWorking();
                         break;
                 }
-            }
-            else
-            {
-                Console.WriteLine("Nie znaleziono takiej transakcji");
-            }
+
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
+        }
+        private static void ShowFilterOptions(bool isAdmin)
+        {
+
+            string adminWelcome = "Uprawnienia administracyjne - dostęp do pełnej listy transakcji";
+            string nonAdminWelcome = "Brak uprawnień administracyjnych - dostęp do listy własnych transakcji";
+
+            Console.WriteLine($" {(isAdmin ? adminWelcome : nonAdminWelcome)} ");
+            Dictionary<string, string> filterOptions = new()
+            {
+                { "[a]", "Wyświetl wszystkie (dostępne) transakcje" },
+                { "[m]", "Wyświetl transakcje dla wybranego miesiąca" },
+                { "[u]", "Wyświetl transakcje dla wybranego użytkownika" },
+                { "[c]", "Wyświetl transakcje według kategorii" },
+                { "[p]", "Wyświetl kwoty w przedziale" },
+            };
+
+            foreach (KeyValuePair<string, string> option in filterOptions)
+            {
+                Console.WriteLine($" {option.Key} - {option.Value}");
+            }
         }
 
         public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
-            static void ShowFilterOptions(bool isAdmin) { 
-
-                string adminWelcome = "Uprawnienia administracyjne - dostęp do pełnej listy transakcji";
-                string nonAdminWelcome = "Brak uprawnień administracyjnych - dostęp do listy własnych transakcji";
-
-                Console.WriteLine($" {(isAdmin ? adminWelcome : nonAdminWelcome)} ");
-                Dictionary<string, string> filterOptions = new()
-                {
-                    { "[a]", "Wyświetl wszystkie (dostępne) transakcje" },
-                    { "[m]", "Wyświetl transakcje dla wybranego miesiąca" },
-                    { "[u]", "Wyświetl transakcje dla wybranego użytkownika" },
-                    { "[c]", "Wyświetl transakcje według kategorii" },
-                    { "[p]", "Wyświetl kwoty w przedziale" },
-                };
-
-                foreach (KeyValuePair<string, string> option in filterOptions)
-                {
-                    Console.WriteLine($" {option.Key} - {option.Value}");
-                }
-            }
-
-            if (user.UserIsAdmin)
-            {
-                    ShowFilterOptions(user.UserIsAdmin);
-            } 
-            else
-            {
-                    ShowFilterOptions(user.UserIsAdmin);
-            }
+            // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
+            ShowFilterOptions(user.UserIsAdmin);
         }
-        private void PrintMenuHeader()
+        private void PrintMenuHeader(User user)
         {
-            Console.WriteLine("Witamy w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
+            Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
 
             foreach (KeyValuePair<string, string> option in _programOptions)
             {
@@ -163,7 +163,7 @@ namespace BudgetApp
             {
                 do
                 {
-                    PrintMenuHeader();
+                    PrintMenuHeader(user);
 
                     ConsoleKeyInfo keyInfo = Console.ReadKey();
 
@@ -185,6 +185,10 @@ namespace BudgetApp
 
                         case ConsoleKey.D:
                             ShowTransactions(transactionsList, categoriesList, user);
+                            break;
+
+                        case ConsoleKey.F:
+                            ShowCategoriesList(categoriesList);
                             break;
 
                         default:
