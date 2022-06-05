@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    class User : IUser
+    public class User : IUser
     {
         private string _firstName;
         private string _lastName;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BudgetApp
@@ -18,10 +19,12 @@ namespace BudgetApp
                  new User("Jan", "Kowalski", true),
                  DateTime.Parse("2019-08-01"));
 
-            await firstTransaction.AddTransactionToDB(firstTransaction);
+            Dictionary<int, Transaction> dictionary = new Dictionary<int, Transaction>();
 
-            // await budget.ShowTransactionList();
-
+            dictionary.Add(firstTransaction.TransactionID, firstTransaction);
+            BudgetApp.classes.JsonLoader.SaveTransactionList(dictionary);
+            Dictionary<int, Transaction> a = BudgetApp.classes.JsonLoader.LoadTransactionList();
+            a[0].PrintProperties();
         }
     }
 }

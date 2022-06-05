@@ -83,5 +83,15 @@ namespace BudgetApp
 
             return removingTransaction;
         }
+        public void PrintProperties()
+        {
+            Console.WriteLine($"id: {_id} \n" +
+                $"categoryName: {_category.CategoryName} \n" +
+                $"categoryType: {_category.CategoryType} \n" +
+                $"amount: {_amount} \n" +
+                $"description: {_description} \n" +
+                $"user: {_user.UserFirstName} {_user.UserLastName} \n" +
+                $"date: {_date}");
+        }
     }
 }

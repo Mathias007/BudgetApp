@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    abstract class BudgetService : IBudgetService
+    public abstract class BudgetService : IBudgetService
     {
         public string GetDatabasePath()
         {

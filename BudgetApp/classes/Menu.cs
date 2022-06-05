@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    class Menu : IMenu
+    public class Menu : IMenu
     {
         private bool _isProgramOpen = true;
         private readonly Dictionary<string, string> _programOptions = new()
