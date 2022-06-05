@@ -8,9 +8,14 @@ namespace BudgetApp
     {
         public static async Task Main()
         {
-            Budget budget = new();
+            Dictionary<string, string> fileNames = new()
+            {
+                { "Transactions", "TransactionsList.json" },
+                { "Users", "UserList.json" },
+                { "Categories", "CategoriesList.json" },
+            };
 
-            budget.CreateBudgetDB();
+            Budget budget = new();
 
             Transaction firstTransaction = new(0,
                  new Category("income", "transaction"),
@@ -22,8 +27,8 @@ namespace BudgetApp
             Dictionary<int, Transaction> dictionary = new();
 
             dictionary.Add(firstTransaction.TransactionID, firstTransaction);
-            JsonLoader.SaveTransactionList(dictionary);
-            Dictionary<int, Transaction> a = JsonLoader.LoadTransactionList();
+            Budget.SaveTransactionList(dictionary, fileNames["Transactions"]);
+            Dictionary<int, Transaction> a = Budget.LoadTransactionList(fileNames["Transactions"]);
             a[0].PrintProperties();
         }
     }
