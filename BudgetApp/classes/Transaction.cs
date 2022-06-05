@@ -34,55 +34,94 @@ namespace BudgetApp
             _date = date;
         }
 
-        public Transaction CreateNewTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date)
+        public static Transaction CreateNewTransaction(int transactionID, Dictionary<int, Category> categoriesList, User user)
         {
-            var testTransaction = new Transaction
-            (
-                 0,
-                 new Category("income", "transaction"),
-                 2137.5,
-                 "Testowa transakcja",
-                 new User("Jan", "Kowalski", true, true),
-                 DateTime.Parse("2019-08-01")
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
+            foreach (KeyValuePair<int, Category> record in categoriesList)
+            {
+                Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+            }
+            int selectedCategoryID = int.Parse(Console.ReadLine());
+
+            Console.Write("Wprowadź kwotę PLN (wartość bezwzględna - w przypadku wyboru kategorii wydatku liczba zostanie potraktowana jako ujemna): ");
+            double amount = double.Parse(Console.ReadLine());
+
+            Console.Write("Wprowadź opis transakcji (pole opcjonalne): ");
+            string description = Console.ReadLine();
+
+            DateTimeOffset date = DateTimeOffset.Now;
+
+            return new Transaction(
+                transactionID,
+                categoriesList[selectedCategoryID],
+                amount,
+                description,
+                user,
+                date
             );
-
-            // method to implement - look at AddTransactions in Menu class (separate logic)
-
-            return testTransaction;
-
         }
-        public Transaction FindTransactionByID(int id)
+
+        public static Transaction FindTransactionByID(Dictionary<int, Transaction> transactionsList)
         {
-            var testTransaction = new Transaction
-            (
-                 0,
-                 new Category("income", "transaction"),
-                 2137.5,
-                 "Testowa transakcja",
-                 new User("Jan", "Kowalski", true, true),
-                 DateTime.Parse("2019-08-01")
+            Console.Write("Wpisz ID poszukiwanej transakcji: ");
+            int selectedTransactionID = int.Parse(Console.ReadLine());
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            if (transactionsList.ContainsKey(selectedTransactionID))
+            {
+                Console.WriteLine("Pod wpisanym kluczem znaleziono poniższą transakcję:");
+                transactionsList[selectedTransactionID].PrintProperties();
+                return transactionsList[selectedTransactionID];
+            }
+            else
+            {
+                Console.WriteLine("Nie znaleziono transakcji o takim ID.");
+                return null;
+            }
+        }
+
+        public static Transaction ModifySelectedTransaction(Transaction modyfingTransaction, Dictionary<int, Category> categoriesList)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Wybierz nową kategorię transakcji z listy poniżej, wpisując jej numer ");
+            foreach (KeyValuePair<int, Category> record in categoriesList)
+            {
+                Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+            }
+            int selectedCategoryID = int.Parse(Console.ReadLine());
+
+            Console.Write("Wprowadź nową kwotę w PLN: ");
+            double amount = double.Parse(Console.ReadLine());
+
+            Console.Write("Wprowadź nowy opis transakcji: ");
+            string description = Console.ReadLine();
+
+            return new Transaction(
+                modyfingTransaction.TransactionID,
+                categoriesList[selectedCategoryID],
+                amount,
+                description,
+                modyfingTransaction.TransactionUser,
+                modyfingTransaction.TransactionDate
             );
-
-            // method to implement look at EditTransactions in Menu class (separate logic)
-
-            return testTransaction;
         }
-        public Transaction ModifySelectedTransaction(int id, Category category, double amount, string description, User user, DateTimeOffset date)
+
+        public static Transaction RemoveSelectedTransaction(int id, Dictionary<int, Transaction> transactionsList)
         {
-            Transaction modyfyingTransaction = FindTransactionByID(id);
+            Transaction removingTransaction = transactionsList[id];
+            Console.WriteLine($"Wybrałeś usuwanie transakcji zapisanej pod numerem {id}");
+            Console.Write("Czy potwierdzasz usuwanie [T/N]? Operacja jest nieodwracalna: ");
 
-            // method to implement look at EditTransactions in Menu class (separate logic)
+            string finalDecisionKey = Console.ReadLine();
 
-            return modyfyingTransaction;
-        }
-        public Transaction RemoveSelectedTransaction(int id)
-        {
-            Transaction removingTransaction = FindTransactionByID(id);
+            if (finalDecisionKey.ToUpper() == "T") transactionsList.Remove(id);
 
-            // method to implement look at EditTransactions in Menu class (separate logic)
+            Console.WriteLine("Operacja usuwania transakcji zakończyła się powodzeniem");
 
             return removingTransaction;
         }
+
         public void PrintProperties()
         {
             Console.WriteLine($"id: {_id} \n" +
