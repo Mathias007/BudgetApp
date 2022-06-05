@@ -8,8 +8,6 @@ namespace BudgetApp
 {
     interface IBudgetService
     {
-        string GetDatabasePath();
-        void CreateBudgetDB();
         public Dictionary<int, Transaction> LoadDataFromDB();
         public Dictionary<int, Transaction> SaveDataToDB();
         double CalculateBalanceValue();
