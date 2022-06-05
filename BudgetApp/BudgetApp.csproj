@@ -7,4 +7,8 @@
 
   <ProjectExtensions><VisualStudio><UserProperties transactionslist_1json__JsonSchema="https://appsemble.app/api.json" /></VisualStudio></ProjectExtensions>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
 </Project>
