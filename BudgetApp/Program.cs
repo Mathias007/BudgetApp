@@ -16,14 +16,14 @@ namespace BudgetApp
                  new Category("income", "transaction"),
                  2137.5,
                  "Testowa transakcja",
-                 new User("Jan", "Kowalski", true),
+                 new User("Jan", "Kowalski", true, true),
                  DateTime.Parse("2019-08-01"));
 
-            Dictionary<int, Transaction> dictionary = new Dictionary<int, Transaction>();
+            Dictionary<int, Transaction> dictionary = new();
 
             dictionary.Add(firstTransaction.TransactionID, firstTransaction);
-            BudgetApp.classes.JsonLoader.SaveTransactionList(dictionary);
-            Dictionary<int, Transaction> a = BudgetApp.classes.JsonLoader.LoadTransactionList();
+            JsonLoader.SaveTransactionList(dictionary);
+            Dictionary<int, Transaction> a = JsonLoader.LoadTransactionList();
             a[0].PrintProperties();
         }
     }

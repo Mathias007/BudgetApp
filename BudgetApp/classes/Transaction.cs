@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    class Transaction : BudgetService, ITransaction
+    public class Transaction : BudgetService, ITransaction
     {
         private int _id;
         private Category _category;
