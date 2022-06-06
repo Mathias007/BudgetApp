@@ -8,6 +8,7 @@ namespace BudgetApp
 {
     interface ICategory
     {
+        int CategoryID { get; set; }
         string CategoryType { get; set; }
         string CategoryName { get; set; }
     }

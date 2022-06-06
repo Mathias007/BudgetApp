@@ -8,10 +8,10 @@ namespace BudgetApp
 {
     interface IUser
     {
+        int UserID { get; set; }
         string UserFirstName { get; set; }
         string UserLastName { get; set; }
         bool UserIsActive { get; set; }
         bool UserIsAdmin { get; set; }
-
     }
 }
