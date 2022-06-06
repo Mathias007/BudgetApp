@@ -3,11 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-
 namespace BudgetApp
 {  
     public abstract class BudgetService : IBudgetService
     {
+        public static Dictionary<string, string> fileNames = new()
+        {
+            { "Transactions", "TransactionsList.json" },
+            { "Users", "UserList.json" },
+            { "Categories", "CategoriesList.json" },
+        };
+
         private static string GetDatabasePath(string fileName)
         {
             return Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, $"..\\..\\..\\{fileName}"));
@@ -50,10 +56,5 @@ namespace BudgetApp
             }
             File.WriteAllText(GetDatabasePath(fileName), JsonConvert.SerializeObject(usersList));
         }
-
-        public Dictionary<int, Transaction> LoadDataFromDB() => throw new NotImplementedException();
-        public Dictionary<int, Transaction> SaveDataToDB() => throw new NotImplementedException();
-        public double CalculateBalanceValue() => throw new NotImplementedException();
-        public double CalculateBudgetStructure() => throw new NotImplementedException();
     }
 }
