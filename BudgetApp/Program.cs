@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BudgetApp
 {
     class Program
     {
-        public static async Task Main()
+        public static void Main()
         {
-            Dictionary<string, string> fileNames = new()
-            {
-                { "Transactions", "TransactionsList.json" },
-                { "Users", "UserList.json" },
-                { "Categories", "CategoriesList.json" },
-            };
+            Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
+            budget.CalculateBalance();
 
-            Budget budget = new();
-            Menu menu = new();
+            Menu menu = new(budget);
 
-            Category firstCategory = new("income", "Wynagrodzenie");
-            User firstUser = new("Jan", "Kowalski", true, true);
+            Category firstCategory = new(0, "income", "Wynagrodzenie");
+            User firstUser = new(0, "Jan", "Kowalski", true, true);
 
             Transaction firstTransaction = new(
                  0,
@@ -39,10 +33,6 @@ namespace BudgetApp
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
             menu.HandleMenu(users, transactions, categories, firstUser);
-
-            Budget.SaveTransactionList(transactions, fileNames["Transactions"]);
-            Dictionary<int, Transaction> a = Budget.LoadTransactionList(fileNames["Transactions"]);
-            a[1].PrintProperties();
         }
     }
 }

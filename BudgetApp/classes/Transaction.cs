@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
 
 namespace BudgetApp
 {
@@ -107,9 +102,9 @@ namespace BudgetApp
             );
         }
 
-        public static Transaction RemoveSelectedTransaction(int id, Dictionary<int, Transaction> transactionsList)
+        public static Dictionary<int, Transaction> RemoveSelectedTransaction(int id, Dictionary<int, Transaction> transactionsList)
         {
-            Transaction removingTransaction = transactionsList[id];
+            // Transaction removingTransaction = transactionsList[id];
             Console.WriteLine($"Wybrałeś usuwanie transakcji zapisanej pod numerem {id}");
             Console.Write("Czy potwierdzasz usuwanie [T/N]? Operacja jest nieodwracalna: ");
 
@@ -119,7 +114,7 @@ namespace BudgetApp
 
             Console.WriteLine("Operacja usuwania transakcji zakończyła się powodzeniem");
 
-            return removingTransaction;
+            return transactionsList;
         }
 
         public void PrintProperties()

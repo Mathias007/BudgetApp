@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BudgetApp
 {
@@ -15,11 +13,18 @@ namespace BudgetApp
             { "[s]", "Dodaj nowe transakcje" },
             { "[a]", "Edytuj i usuwaj istniejące transakcje" },
             { "[d]", "Wyświetl transakcje" },
-            { "[f]", "Wyświetl listę kategorii"}
+            { "[f]", "Wyświetl listę kategorii"},
+            { "[c]", "Sprawdź stan konta"}
         };
+        private Budget _budget;
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
         public Dictionary<string, string> ProgramOptions { get => _programOptions; }
+
+        public Menu(Budget budget)
+        {
+            _budget = budget;
+        }
 
         public void ShowUsersList(Dictionary<int, User> usersList)
         {
@@ -68,6 +73,8 @@ namespace BudgetApp
 
             Console.WriteLine("Transakcja pomyślnie dodana!");
             addingTransaction.PrintProperties();
+
+            _budget.UpdateBudget(transactionsList);
         }
 
         public void EditTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
@@ -92,12 +99,16 @@ namespace BudgetApp
                         transactionsList[selectedTransactionID] = newTransactionData;
                         Console.WriteLine("Edycja zakończona!");
                         newTransactionData.PrintProperties();
-                        break;
+                        _budget.UpdateBudget(transactionsList);
+                    break;
+
                     case ConsoleKey.D:
                         // USUWANIE DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)
-                        Transaction.RemoveSelectedTransaction(selectedTransactionID, transactionsList);
+                        transactionsList = Transaction.RemoveSelectedTransaction(selectedTransactionID, transactionsList);
                         Console.WriteLine("Usuwanie zakończone!");
-                        break;
+                        _budget.UpdateBudget(transactionsList);
+                    break;
+
                     default:
                         Console.WriteLine("Nieprawidłowy wybór");
                         ManageProgramWorking();
@@ -128,7 +139,6 @@ namespace BudgetApp
                 Console.WriteLine($" {option.Key} - {option.Value}");
             }
         }
-
         public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
             // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
@@ -152,6 +162,7 @@ namespace BudgetApp
             if (Console.ReadKey().Key == ConsoleKey.T)
             {
                 Console.WriteLine("\n Dziękujemy za skorzystanie z aplikacji budżetowej");
+                Budget.SaveTransactionList(_budget._budget, Budget.fileNames["Transactions"]);
                 _isProgramOpen = !_isProgramOpen;
             }
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -189,6 +200,10 @@ namespace BudgetApp
 
                         case ConsoleKey.F:
                             ShowCategoriesList(categoriesList);
+                            break;
+
+                        case ConsoleKey.C:
+                            _budget.CalculateBalance();
                             break;
 
                         default:
