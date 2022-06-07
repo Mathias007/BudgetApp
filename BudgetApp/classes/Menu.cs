@@ -81,6 +81,8 @@ namespace BudgetApp
             Console.WriteLine("Lista wszystkich kategorii:");
             Console.ForegroundColor = ConsoleColor.Yellow;
 
+
+            Console.WriteLine(" + [0]: dodaj kategorię");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
                 if (record.Value.CategoryType == "expense") Console.ForegroundColor = ConsoleColor.Red;
@@ -92,6 +94,33 @@ namespace BudgetApp
                         $"{record.Value.CategoryName} ({record.Value.CategoryType})");
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
+            //dodaj kategorię
+            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            string userInput = Console.ReadLine();
+
+            if (String.IsNullOrWhiteSpace(userInput))
+            {
+                Console.Clear();
+                return;
+            }
+
+            int wybraneID = int.Parse(userInput);
+            if (wybraneID == 0)
+            {
+                Category addingCategory = Category.addCategory(categoriesList.Keys.Max());
+                categoriesList.Add(addingCategory.CategoryID, addingCategory);
+            }
+            else if (categoriesList.ContainsKey(wybraneID))
+            {
+                Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[wybraneID].CategoryName}): ");
+                string newCategoryName = Console.ReadLine();
+                categoriesList[wybraneID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[wybraneID].CategoryName : newCategoryName;
+            }
+            else
+            {
+                Console.WriteLine("nie ma takiego id");
+            }
+            // koniec dodawania kategorii
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
         }
