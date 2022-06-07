@@ -12,8 +12,8 @@ namespace BudgetApp
 
             Menu menu = new(budget);
 
-            Category firstCategory = new(0, "income", "Wynagrodzenie");
-            User firstUser = new(0, "Jan", "Kowalski", true, true);
+            Category firstCategory = new(1, "income", "Wynagrodzenie"); //ID miały się zaczynać od 1
+            User firstUser = new(1, "Jan", "Kowalski", true, true);
 
             Transaction firstTransaction = new(
                  0,
@@ -28,11 +28,23 @@ namespace BudgetApp
             Dictionary<int, Category> categories = new();
             Dictionary<int, User> users = new();
 
-            categories.Add(0, firstCategory);
-            users.Add(0, firstUser);
+            categories.Add(firstCategory.CategoryID, firstCategory); 
+            users.Add(firstUser.UserID, firstUser);
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
-            menu.HandleMenu(users, transactions, categories, firstUser);
+            //menu.HandleMenu(users, transactions, categories, firstUser);
+
+            //test ShowUserList()
+            var user1 = new User(1, "Monika", "Jeden", true, true);
+            var user2 = new User(2, "Janusz", "Dwa", true, true);
+            var user3 = new User(3, "Bogdan", "Trzy", true, true);
+            Dictionary<int, User> usersTest = new();
+            usersTest.Add(user1.UserID, user1);
+            usersTest.Add(user2.UserID, user2);
+            usersTest.Add(user3.UserID, user3);
+
+            menu.HandleMenu(usersTest, transactions, categories, firstUser);
+            //koniec testu
         }
     }
 }
