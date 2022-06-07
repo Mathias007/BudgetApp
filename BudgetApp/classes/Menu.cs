@@ -143,6 +143,22 @@ namespace BudgetApp
         {
             // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
             ShowFilterOptions(user.UserIsAdmin);
+
+            // Krok 1. Wybór kryterium filtrowania (switch <-> klawisz wg filterOptions)
+            // Krok 2. Wygenerowanie nowej listy transakcji, powstałej w rezultacie przefiltrowania głównej listy.
+            // Krok 3. Wyświetlenie w konsoli tabeli zawierającej dane z przefiltrowanej listy transakcji.
+            // Krok 4. Obsłużenie możliwości wyczyszczenia okna i zastosowania nowego kryterium filtrowania.
+            // Krok 5. Obsłużenie możliwości powrotu do głównego menu lub sekcji modyfikacji transakcji.
+
+         // Przykład filtrowania (do potencjalnego wykorzystania)
+         //   Dictionary<string, int> dict = new Dictionary<string, int>() {
+         //   {"A", 1}, {"B", 2}, {"C", 3}, {"D", 4}, {"E", 5}
+         //   };
+
+         //   Dictionary<string, int> filtered = dict.Where(x => x.Value % 2 == 0)
+         //                       .ToDictionary(x => x.Key, x => x.Value);
+
+         //   Console.WriteLine(String.Join(", ", filtered));
         }
         private void PrintMenuHeader(User user)
         {
