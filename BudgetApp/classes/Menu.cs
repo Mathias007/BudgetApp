@@ -30,15 +30,48 @@ namespace BudgetApp
         {
             Console.WriteLine("Lista wszystkich domowników:");
             Console.ForegroundColor = ConsoleColor.Yellow;
-
+            Console.WriteLine(" + [0]: dodaj nowego domownika"); //
             foreach (KeyValuePair<int, User> record in usersList)
             {
                 Console.WriteLine(
-                    $" + {record.Key}: " +
+                    $" + [{record.Key}]: " +
                     $"{record.Value.UserFirstName} {record.Value.UserLastName} " +
                     $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
                     $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
             }
+            // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
+            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            string userInput = Console.ReadLine();
+
+            if (String.IsNullOrWhiteSpace(userInput))
+            {
+                Console.Clear();
+                return;
+            }
+
+            int wybraneID = int.Parse(userInput);
+            if (wybraneID == 0)
+            {
+                User addingUser = User.addUser(usersList.Keys.Max());
+                usersList.Add(addingUser.UserID, addingUser);
+            }
+            else if (usersList.ContainsKey(wybraneID))
+            {
+                Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[wybraneID].UserFirstName}): ");
+                string newFirstName = Console.ReadLine();
+                usersList[wybraneID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[wybraneID].UserFirstName : newFirstName;
+                Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[wybraneID].UserLastName}): ");
+                string newLastName = Console.ReadLine();
+                usersList[wybraneID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[wybraneID].UserLastName : newLastName;
+                Console.WriteLine($"Domownik jest aktywny({usersList[wybraneID].UserIsActive})? t/n");
+                string isActive = Console.ReadLine().ToUpper();
+                usersList[wybraneID].UserIsActive = isActive.Equals("N") ? false : true; //możliwe że trzeba będzie bardziej to rozpisać
+            }
+            else
+            {
+                Console.WriteLine("nie ma takiego id");
+            }
+            // koniec dodaj usera
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
         }
@@ -48,6 +81,8 @@ namespace BudgetApp
             Console.WriteLine("Lista wszystkich kategorii:");
             Console.ForegroundColor = ConsoleColor.Yellow;
 
+
+            Console.WriteLine(" + [0]: dodaj kategorię");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
                 if (record.Value.CategoryType == "expense") Console.ForegroundColor = ConsoleColor.Red;
@@ -59,6 +94,33 @@ namespace BudgetApp
                         $"{record.Value.CategoryName} ({record.Value.CategoryType})");
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
+            //dodaj kategorię
+            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            string userInput = Console.ReadLine();
+
+            if (String.IsNullOrWhiteSpace(userInput))
+            {
+                Console.Clear();
+                return;
+            }
+
+            int wybraneID = int.Parse(userInput);
+            if (wybraneID == 0)
+            {
+                Category addingCategory = Category.addCategory(categoriesList.Keys.Max());
+                categoriesList.Add(addingCategory.CategoryID, addingCategory);
+            }
+            else if (categoriesList.ContainsKey(wybraneID))
+            {
+                Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[wybraneID].CategoryName}): ");
+                string newCategoryName = Console.ReadLine();
+                categoriesList[wybraneID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[wybraneID].CategoryName : newCategoryName;
+            }
+            else
+            {
+                Console.WriteLine("nie ma takiego id");
+            }
+            // koniec dodawania kategorii
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
         }

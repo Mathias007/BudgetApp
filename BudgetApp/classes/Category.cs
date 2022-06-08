@@ -22,5 +22,31 @@ namespace BudgetApp
             _type = type;
             _name = name;
         }
+        public static Category addCategory(int maxId)
+        {
+            string incomeOrExpense = "";
+            while (true)
+            {
+                Console.WriteLine("Dochód czy Wydatek? (d/w): ");
+                incomeOrExpense = Console.ReadLine().ToUpper();
+                if (incomeOrExpense.Equals("D"))
+                {
+                    incomeOrExpense = "income";
+                    break;
+                }
+                else if (incomeOrExpense.Equals("W"))
+                {
+                    incomeOrExpense = "expense";
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("nieprawidłowy wybór");
+                }
+            }
+            Console.WriteLine("Nazwa kategorii: ");
+            string categoryName = Console.ReadLine();
+            return new Category(maxId + 1, incomeOrExpense, categoryName);
+        }
     }
 }
