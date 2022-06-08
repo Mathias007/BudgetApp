@@ -32,8 +32,6 @@ namespace BudgetApp
             users.Add(0, firstUser);
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
-            // budget.EstablishBudgetStructure();
-
             menu.HandleMenu(users, transactions, categories, firstUser);
         }
     }
