@@ -26,6 +26,29 @@ namespace BudgetApp
             _budget = budget;
         }
 
+        private int GetUserInputID(Dictionary<int,ITransactionObject> transactionObjectDictionary)
+        {
+            Console.WriteLine("Wpisz id które chcesz wybrać:");
+            string selectedID = Console.ReadLine();
+            int returnID = -1;
+            while (true)
+            {
+                if (int.TryParse(selectedID, out returnID))
+                {
+                    if (transactionObjectDictionary.ContainsKey(returnID) && transactionObjectDictionary[returnID].IsActive)
+                    {
+                        return returnID;
+                    }
+                    Console.WriteLine($"na liście nie istnieje podane id: {selectedID}");
+                }
+                else
+                {
+                    Console.WriteLine($"podana wartość {selectedID} jest niepoprawna, wpisz wartość numeryczną");
+                }
+                selectedID = Console.ReadLine();
+            }
+        }
+
         public void ShowUsersList(Dictionary<int, User> usersList)
         {
             Console.WriteLine("Lista wszystkich domowników:");
@@ -121,12 +144,12 @@ namespace BudgetApp
                 string newCategoryName = Console.ReadLine();
                 categoriesList[wybraneID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[wybraneID].CategoryName : newCategoryName;
 
-                Console.WriteLine($"Kategoria jest aktywna({categoriesList[wybraneID].CategoryIsActive})? (t/n), zostaw puste żeby nie zmieniać ");
+                Console.WriteLine($"Kategoria jest aktywna({categoriesList[wybraneID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
                 string newActiveStatus = Console.ReadLine().ToUpper();
                 if (newActiveStatus.Equals("T"))
-                    categoriesList[wybraneID].CategoryIsActive = true;
+                    categoriesList[wybraneID].IsActive = true;
                 else if (newActiveStatus.Equals("N"))
-                    categoriesList[wybraneID].CategoryIsActive = false;
+                    categoriesList[wybraneID].IsActive = false;
             }
             else
             {

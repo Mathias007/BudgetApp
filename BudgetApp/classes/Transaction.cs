@@ -35,7 +35,7 @@ namespace BudgetApp
             Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
-                if (record.Value.CategoryIsActive)
+                if (record.Value.IsActive)
                 {
                     Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
                 }
@@ -43,7 +43,7 @@ namespace BudgetApp
             int selectedCategoryID = int.Parse(Console.ReadLine());
             while (true)
             {
-                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].CategoryIsActive)
+                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].IsActive)
                 {
                     Console.WriteLine("nieprawidłowe id, spróbuj jeszcze raz z innym id");
                     selectedCategoryID = int.Parse(Console.ReadLine());
@@ -93,7 +93,7 @@ namespace BudgetApp
             Console.WriteLine("Wybierz nową kategorię transakcji z listy poniżej, wpisując jej numer ");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
-                if (record.Value.CategoryIsActive)
+                if (record.Value.IsActive)
                 {
                     Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
                 }
@@ -101,7 +101,7 @@ namespace BudgetApp
             int selectedCategoryID = int.Parse(Console.ReadLine());
             while (true)
             {
-                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].CategoryIsActive)
+                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].IsActive)
                 {
                     Console.WriteLine("nieprawidłowe id, spróbuj jeszcze raz z innym id");
                     selectedCategoryID = int.Parse(Console.ReadLine());

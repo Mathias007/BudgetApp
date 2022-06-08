@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    public class User : IUser
+    public class User : IUser, ITransactionObject
     {
         private int _id;
         private string _firstName;
@@ -19,6 +19,7 @@ namespace BudgetApp
         public string UserLastName { get => _lastName; set => _lastName = value; }
         public bool UserIsActive { get => _isActive; set => _isActive = value; }
         public bool UserIsAdmin { get => _isAdmin; set => _isAdmin = value; }
+        public bool IsActive { get => _isActive; set => _isActive = value; }
 
         public User(int id, string firstName, string lastName, bool isActive, bool isAdmin)
         {

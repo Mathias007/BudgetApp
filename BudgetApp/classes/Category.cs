@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    public class Category : ICategory
+    public class Category : ICategory, ITransactionObject
     {
         private int _id;
         private string _type;
@@ -16,7 +16,7 @@ namespace BudgetApp
         public int CategoryID { get => _id; set => _id = value; }
         public string CategoryType { get => _type; set => _type = value; }
         public string CategoryName { get => _name; set => _name = value; }
-        public bool CategoryIsActive { get => _isActive; set => _isActive = value; }
+        public bool IsActive { get => _isActive; set => _isActive = value; }
 
         public Category(int id, string type, string name)
         {
