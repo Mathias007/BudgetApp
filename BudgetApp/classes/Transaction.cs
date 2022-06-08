@@ -35,10 +35,21 @@ namespace BudgetApp
             Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
-                Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+                if (record.Value.CategoryIsActive)
+                {
+                    Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+                }
             }
             int selectedCategoryID = int.Parse(Console.ReadLine());
-
+            while (true)
+            {
+                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].CategoryIsActive)
+                {
+                    Console.WriteLine("nieprawidłowe id, spróbuj jeszcze raz z innym id");
+                    selectedCategoryID = int.Parse(Console.ReadLine());
+                }
+                break;
+            }
             Console.Write("Wprowadź kwotę PLN (wartość bezwzględna - w przypadku wyboru kategorii wydatku liczba zostanie potraktowana jako ujemna): ");
             double amount = double.Parse(Console.ReadLine());
 
@@ -82,10 +93,21 @@ namespace BudgetApp
             Console.WriteLine("Wybierz nową kategorię transakcji z listy poniżej, wpisując jej numer ");
             foreach (KeyValuePair<int, Category> record in categoriesList)
             {
-                Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+                if (record.Value.CategoryIsActive)
+                {
+                    Console.WriteLine($" + {record.Key}: {record.Value.CategoryName}");
+                }
             }
             int selectedCategoryID = int.Parse(Console.ReadLine());
-
+            while (true)
+            {
+                if (!categoriesList.ContainsKey(selectedCategoryID) || !categoriesList[selectedCategoryID].CategoryIsActive)
+                {
+                    Console.WriteLine("nieprawidłowe id, spróbuj jeszcze raz z innym id");
+                    selectedCategoryID = int.Parse(Console.ReadLine());
+                }
+                break;
+            }
             Console.Write("Wprowadź nową kwotę w PLN: ");
             double amount = double.Parse(Console.ReadLine());
 

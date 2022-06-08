@@ -60,12 +60,17 @@ namespace BudgetApp
                 Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[wybraneID].UserFirstName}): ");
                 string newFirstName = Console.ReadLine();
                 usersList[wybraneID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[wybraneID].UserFirstName : newFirstName;
+
                 Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[wybraneID].UserLastName}): ");
                 string newLastName = Console.ReadLine();
                 usersList[wybraneID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[wybraneID].UserLastName : newLastName;
-                Console.WriteLine($"Domownik jest aktywny({usersList[wybraneID].UserIsActive})? t/n");
-                string isActive = Console.ReadLine().ToUpper();
-                usersList[wybraneID].UserIsActive = isActive.Equals("N") ? false : true; //możliwe że trzeba będzie bardziej to rozpisać
+
+                Console.WriteLine($"Domownik jest aktywny({usersList[wybraneID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
+                string newActiveStatus = Console.ReadLine().ToUpper();
+                if (newActiveStatus.Equals("T"))
+                    usersList[wybraneID].UserIsActive = true;
+                else if (newActiveStatus.Equals("N"))
+                    usersList[wybraneID].UserIsActive = false;
             }
             else
             {
@@ -115,6 +120,13 @@ namespace BudgetApp
                 Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[wybraneID].CategoryName}): ");
                 string newCategoryName = Console.ReadLine();
                 categoriesList[wybraneID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[wybraneID].CategoryName : newCategoryName;
+
+                Console.WriteLine($"Kategoria jest aktywna({categoriesList[wybraneID].CategoryIsActive})? (t/n), zostaw puste żeby nie zmieniać ");
+                string newActiveStatus = Console.ReadLine().ToUpper();
+                if (newActiveStatus.Equals("T"))
+                    categoriesList[wybraneID].CategoryIsActive = true;
+                else if (newActiveStatus.Equals("N"))
+                    categoriesList[wybraneID].CategoryIsActive = false;
             }
             else
             {
