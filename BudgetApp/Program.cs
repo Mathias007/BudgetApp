@@ -16,7 +16,7 @@ namespace BudgetApp
             User firstUser = new(1, "Jan", "Kowalski", true, true);
 
             Transaction firstTransaction = new(
-                 0,
+                 1,
                  firstCategory,
                  2137.5,
                  "Testowa transakcja",
@@ -33,6 +33,8 @@ namespace BudgetApp
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
             //menu.HandleMenu(users, transactions, categories, firstUser);
+
+            // budget.EstablishBudgetStructure();
 
             testUserlist();
 
