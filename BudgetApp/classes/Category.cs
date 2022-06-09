@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    public class Category : ICategory, ITransactionObject
+    public class Category : ICategory
     {
         private int _id;
         private string _type;

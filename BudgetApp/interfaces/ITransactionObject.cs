@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    interface ITransactionObject
+    public interface ITransactionObject
     {
         bool IsActive { get; set; }
     }

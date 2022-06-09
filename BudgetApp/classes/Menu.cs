@@ -26,29 +26,39 @@ namespace BudgetApp
             _budget = budget;
         }
 
-        private int GetUserInputID(Dictionary<int,ITransactionObject> transactionObjectDictionary)
+        private class GetConsoleInput<T> where T : ITransactionObject
         {
-            Console.WriteLine("Wpisz id które chcesz wybrać:");
-            string selectedID = Console.ReadLine();
-            int returnID = -1;
-            while (true)
+            internal static int GetUserInputID(Dictionary<int, T> transactionObjectDictionary, bool chooseOnlyActive)
             {
-                if (int.TryParse(selectedID, out returnID))
+                Console.WriteLine("Wpisz id które chcesz wybrać:");
+                string selectedID = Console.ReadLine();
+                int returnID = -1;
+                while (true)
                 {
-                    if (transactionObjectDictionary.ContainsKey(returnID) && transactionObjectDictionary[returnID].IsActive)
+                    if (string.IsNullOrWhiteSpace(selectedID))
                     {
-                        return returnID;
+                        return -1;
                     }
-                    Console.WriteLine($"na liście nie istnieje podane id: {selectedID}");
+                    if (selectedID.Equals("0"))
+                    {
+                        return 0;
+                    }
+                    if (int.TryParse(selectedID, out returnID))
+                    {
+                        if (transactionObjectDictionary.ContainsKey(returnID) && (chooseOnlyActive ? transactionObjectDictionary[returnID].IsActive : true))
+                        {
+                            return returnID;
+                        }
+                        Console.WriteLine($"na liście nie istnieje podane id: {selectedID}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"podana wartość {selectedID} jest niepoprawna, wpisz wartość numeryczną");
+                    }
+                    selectedID = Console.ReadLine();
                 }
-                else
-                {
-                    Console.WriteLine($"podana wartość {selectedID} jest niepoprawna, wpisz wartość numeryczną");
-                }
-                selectedID = Console.ReadLine();
             }
         }
-
         public void ShowUsersList(Dictionary<int, User> usersList)
         {
             Console.WriteLine("Lista wszystkich domowników:");
@@ -64,41 +74,32 @@ namespace BudgetApp
             }
             // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
             Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
-            string userInput = Console.ReadLine();
-
-            if (String.IsNullOrWhiteSpace(userInput))
+            int consoleID = GetConsoleInput<User>.GetUserInputID(usersList, false);
+            if (consoleID == -1)
             {
                 Console.Clear();
                 return;
             }
-
-            int wybraneID = int.Parse(userInput);
-            if (wybraneID == 0)
+            if (consoleID == 0)
             {
                 User addingUser = User.addUser(usersList.Keys.Max());
                 usersList.Add(addingUser.UserID, addingUser);
+                return;
             }
-            else if (usersList.ContainsKey(wybraneID))
-            {
-                Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[wybraneID].UserFirstName}): ");
-                string newFirstName = Console.ReadLine();
-                usersList[wybraneID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[wybraneID].UserFirstName : newFirstName;
+            Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[consoleID].UserFirstName}): ");
+            string newFirstName = Console.ReadLine();
+            usersList[consoleID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[consoleID].UserFirstName : newFirstName;
 
-                Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[wybraneID].UserLastName}): ");
-                string newLastName = Console.ReadLine();
-                usersList[wybraneID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[wybraneID].UserLastName : newLastName;
+            Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[consoleID].UserLastName}): ");
+            string newLastName = Console.ReadLine();
+            usersList[consoleID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[consoleID].UserLastName : newLastName;
 
-                Console.WriteLine($"Domownik jest aktywny({usersList[wybraneID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
-                string newActiveStatus = Console.ReadLine().ToUpper();
-                if (newActiveStatus.Equals("T"))
-                    usersList[wybraneID].UserIsActive = true;
-                else if (newActiveStatus.Equals("N"))
-                    usersList[wybraneID].UserIsActive = false;
-            }
-            else
-            {
-                Console.WriteLine("nie ma takiego id");
-            }
+            Console.WriteLine($"Domownik jest aktywny({usersList[consoleID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
+            string newActiveStatus = Console.ReadLine().ToUpper();
+            if (newActiveStatus.Equals("T"))
+                usersList[consoleID].UserIsActive = true;
+            else if (newActiveStatus.Equals("N"))
+                usersList[consoleID].UserIsActive = false;
             // koniec dodaj usera
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
@@ -124,37 +125,28 @@ namespace BudgetApp
             }
             //dodaj kategorię
             Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
-            string userInput = Console.ReadLine();
-
-            if (String.IsNullOrWhiteSpace(userInput))
+            int consoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
+            if (consoleID == -1)
             {
                 Console.Clear();
                 return;
             }
-
-            int wybraneID = int.Parse(userInput);
-            if (wybraneID == 0)
+            if (consoleID == 0)
             {
                 Category addingCategory = Category.addCategory(categoriesList.Keys.Max());
                 categoriesList.Add(addingCategory.CategoryID, addingCategory);
+                return;
             }
-            else if (categoriesList.ContainsKey(wybraneID))
-            {
-                Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[wybraneID].CategoryName}): ");
-                string newCategoryName = Console.ReadLine();
-                categoriesList[wybraneID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[wybraneID].CategoryName : newCategoryName;
+            Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[consoleID].CategoryName}): ");
+            string newCategoryName = Console.ReadLine();
+            categoriesList[consoleID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[consoleID].CategoryName : newCategoryName;
 
-                Console.WriteLine($"Kategoria jest aktywna({categoriesList[wybraneID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
-                string newActiveStatus = Console.ReadLine().ToUpper();
-                if (newActiveStatus.Equals("T"))
-                    categoriesList[wybraneID].IsActive = true;
-                else if (newActiveStatus.Equals("N"))
-                    categoriesList[wybraneID].IsActive = false;
-            }
-            else
-            {
-                Console.WriteLine("nie ma takiego id");
-            }
+            Console.WriteLine($"Kategoria jest aktywna({categoriesList[consoleID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
+            string newActiveStatus = Console.ReadLine().ToUpper();
+            if (newActiveStatus.Equals("T"))
+                categoriesList[consoleID].IsActive = true;
+            else if (newActiveStatus.Equals("N"))
+                categoriesList[consoleID].IsActive = false;
             // koniec dodawania kategorii
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");

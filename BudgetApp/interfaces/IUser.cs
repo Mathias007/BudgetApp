@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BudgetApp
 {
-    interface IUser
+    interface IUser : ITransactionObject
     {
         int UserID { get; set; }
         string UserFirstName { get; set; }
