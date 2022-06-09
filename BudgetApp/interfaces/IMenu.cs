@@ -13,7 +13,7 @@ namespace BudgetApp
         void ShowUsersList();
         void ShowCategoriesList();
         void AddTransactionReworked();
-        void EditTransactionReworked();
+        void EditTransactionReworked(int selectedTransactionID);
         void PrintTransactionList();
         void HandleMenu(Dictionary<int, User> usersList, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
         void ManageProgramWorking();

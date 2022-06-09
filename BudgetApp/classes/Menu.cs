@@ -13,11 +13,8 @@ namespace BudgetApp
         private readonly Dictionary<string, string> _programOptions = new()
         {
             { "[w]", "Wyświetl listę domowników" },
-            { "[s]", "Dodaj nowe transakcje" },
-            { "[a]", "Edytuj i usuwaj istniejące transakcje" },
             { "[d]", "Wyświetl transakcje" },
             { "[f]", "Wyświetl listę kategorii"},
-            { "[c]", "Sprawdź stan konta"}
         };
         private Budget _budget;
 
@@ -33,6 +30,7 @@ namespace BudgetApp
 
         public void ShowUsersList()
         {
+            Console.Clear();
             Console.WriteLine("Lista wszystkich domowników:");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(" + [0]: dodaj nowego domownika"); //
@@ -77,6 +75,7 @@ namespace BudgetApp
 
         public void ShowCategoriesList()
         {
+            Console.Clear();
             Console.WriteLine("Lista wszystkich kategorii:");
             Console.ForegroundColor = ConsoleColor.Yellow;
 
@@ -137,6 +136,7 @@ namespace BudgetApp
 
         public void AddTransactionReworked()
         {
+            Console.Clear();
             int transactionID = transactionsList.Count == 0 ? 1 : transactionsList.Keys.Max() + 1;
 
             Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
@@ -149,20 +149,16 @@ namespace BudgetApp
             string description = Console.ReadLine();
 
             Console.WriteLine("Do którego domownika należy ta transakcja?");
+            printUserList(false);
             int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, true);
 
             DateTimeOffset date = ChooseDateOfTransaction();
 
             transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmmount, description, usersList[selectedUserID], date));
         }
-        public void EditTransactionReworked()
+        public void EditTransactionReworked(int selectedTransactionID)
         {
-            Console.Write("Czy chcesz wyświetlić listę transakcji przed edycją? [T/N]");
-            if (Console.ReadLine().ToUpper() == "T") PrintTransactionList();
-
-            Console.Write("Wpisz ID poszukiwanej transakcji: ");
-            int selectedTransactionID = int.Parse(Console.ReadLine()); //TODO napisać metodę do walidacji inputu
-
+            Console.Clear();
             Console.WriteLine("Co zamierzasz zrobić z wybraną transakcją? [e] - edycja, [d] - usuwanie, [jakikolwiek inny klawisz] - wróć do menu");
             transactionsList[selectedTransactionID].PrintProperties();
             ConsoleKeyInfo keyInfo = Console.ReadKey();
@@ -210,13 +206,35 @@ namespace BudgetApp
         public void PrintTransactionList()
         {
             Console.Clear();
+            Console.WriteLine("[0] - dodaj nową transakcje");
             foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
             {
                 Console.WriteLine($"[{transaction.Key}] : ");
                 transaction.Value.PrintProperties();
             }
+            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby wrócić do menu[??] nie wiem jak to opisać żeby miało sens"); //help
+            while (true)
+            {
+                string consoleInput = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(consoleInput))
+                {
+                    Console.Clear();
+                    return;
+                }
+                if (consoleInput.Equals("0"))
+                {
+                    AddTransactionReworked();
+                    return;
+                }
+                int selectedID = -1;
+                if (int.TryParse(consoleInput, out selectedID) && transactionsList.ContainsKey(selectedID))
+                {
+                    EditTransactionReworked(selectedID);
+                    return;
+                }
+                Console.WriteLine("podanego id nie ma na liscie transakcji");
+            }
         }
-
         private void PrintMenuHeader(User user)
         {
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
@@ -261,24 +279,12 @@ namespace BudgetApp
                             ShowUsersList();
                             break;
 
-                        case ConsoleKey.S:
-                            AddTransactionReworked();
-                            break;
-
-                        case ConsoleKey.A:
-                            EditTransactionReworked();
-                            break;
-
                         case ConsoleKey.D:
                             PrintTransactionList();
                             break;
 
                         case ConsoleKey.F:
                             ShowCategoriesList();
-                            break;
-
-                        case ConsoleKey.C:
-                            _budget.CalculateBalance();
                             break;
 
                         default:
@@ -314,7 +320,7 @@ namespace BudgetApp
         }
         private double UserInputTransactionAmmount(bool allowEmpty)
         {
-            Console.Write("Wprowadź kwotę PLN");
+            Console.WriteLine("Wprowadź kwotę PLN");
             double transactionAmmount = -1;
             string consoleInput = Console.ReadLine();
             while (true)
