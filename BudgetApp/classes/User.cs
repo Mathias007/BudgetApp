@@ -29,13 +29,5 @@ namespace BudgetApp
             _isActive = isActive;
             _isAdmin = isAdmin;
         }
-        private static User addUser(int maxId) //do usunięcia
-        {
-            Console.WriteLine("Imię: ");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Nazwisko: ");
-            string lastName = Console.ReadLine();
-            return new User(maxId + 1, firstName, lastName, true, false);
-        }
     }
 }

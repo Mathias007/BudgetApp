@@ -135,20 +135,7 @@ namespace BudgetApp
             Console.WriteLine("\n");
         }
 
-        public void AddTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
-        {
-            int transactionID = transactionsList.Keys.Max() + 1;
-
-            Transaction addingTransaction = Transaction.CreateNewTransaction(transactionID, categoriesList, user);
-
-            transactionsList.Add(transactionID, addingTransaction);
-
-            Console.WriteLine("Transakcja pomyślnie dodana!");
-            addingTransaction.PrintProperties();
-
-            _budget.UpdateBudget(transactionsList);
-        }
-        private void AddTransactionReworked()
+        public void AddTransactionReworked()
         {
             int transactionID = transactionsList.Count == 0 ? 1 : transactionsList.Keys.Max() + 1;
 
@@ -168,7 +155,7 @@ namespace BudgetApp
 
             transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmmount, description, usersList[selectedUserID], date));
         }
-        private void EditTransactionReworked()
+        public void EditTransactionReworked()
         {
             Console.Write("Czy chcesz wyświetlić listę transakcji przed edycją? [T/N]");
             if (Console.ReadLine().ToUpper() == "T") PrintTransactionList();
@@ -220,78 +207,11 @@ namespace BudgetApp
                     break;
             }
         }
-        private void PrintTransactionList()
+        public void PrintTransactionList()
         {
             //do implementacji
         }
 
-        public void EditTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
-        {
-            Console.Write("Czy chcesz wyświetlić listę transakcji przed edycją? [T/N]");
-            string showingTransactionsList = Console.ReadLine();
-            if (showingTransactionsList.ToUpper() == "T") ShowTransactions(transactionsList, categoriesList, user);
-
-            Console.Write("Wpisz ID poszukiwanej transakcji: ");
-            int selectedTransactionID = int.Parse(Console.ReadLine());
-
-            Transaction transactionToEdit = Transaction.FindTransactionByID(transactionsList);
-
-                Console.WriteLine("Co zamierzasz zrobić z wybraną transakcją? [e] - edycja, [d] - usuwanie");
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
-
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.E:
-                        // EDYCJA DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)                        
-                        Transaction newTransactionData = Transaction.ModifySelectedTransaction(transactionToEdit, categoriesList);
-                        transactionsList[selectedTransactionID] = newTransactionData;
-                        Console.WriteLine("Edycja zakończona!");
-                        newTransactionData.PrintProperties();
-                        _budget.UpdateBudget(transactionsList);
-                    break;
-
-                    case ConsoleKey.D:
-                        // USUWANIE DANYCH TRANSAKCJI (można uwzględnić uprawnienia - pole isAdmin)
-                        transactionsList = Transaction.RemoveSelectedTransaction(selectedTransactionID, transactionsList);
-                        Console.WriteLine("Usuwanie zakończone!");
-                        _budget.UpdateBudget(transactionsList);
-                    break;
-
-                    default:
-                        Console.WriteLine("Nieprawidłowy wybór");
-                        ManageProgramWorking();
-                        break;
-                }
-
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("\n");
-        }
-        private static void ShowFilterOptions(bool isAdmin)
-        {
-
-            string adminWelcome = "Uprawnienia administracyjne - dostęp do pełnej listy transakcji";
-            string nonAdminWelcome = "Brak uprawnień administracyjnych - dostęp do listy własnych transakcji";
-
-            Console.WriteLine($" {(isAdmin ? adminWelcome : nonAdminWelcome)} ");
-            Dictionary<string, string> filterOptions = new()
-            {
-                { "[a]", "Wyświetl wszystkie (dostępne) transakcje" },
-                { "[m]", "Wyświetl transakcje dla wybranego miesiąca" },
-                { "[u]", "Wyświetl transakcje dla wybranego użytkownika" },
-                { "[c]", "Wyświetl transakcje według kategorii" },
-                { "[p]", "Wyświetl kwoty w przedziale" },
-            };
-
-            foreach (KeyValuePair<string, string> option in filterOptions)
-            {
-                Console.WriteLine($" {option.Key} - {option.Value}");
-            }
-        }
-        public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
-        {
-            // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
-            ShowFilterOptions(user.UserIsAdmin);
-        }
         private void PrintMenuHeader(User user)
         {
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
@@ -343,7 +263,7 @@ namespace BudgetApp
                             break;
 
                         case ConsoleKey.D:
-                            ShowTransactions(transactionsList, categoriesList, user);
+                            PrintTransactionList();
                             break;
 
                         case ConsoleKey.F:

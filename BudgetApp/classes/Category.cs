@@ -25,31 +25,5 @@ namespace BudgetApp
             _name = name;
             _isActive = true; //nie ma żadnego powodu żeby kategoria którą właśnie dodaliśmy była nieaktywna
         }
-        private static Category addCategory(int maxId) // do usunięcia
-        {
-            string incomeOrExpense = "";
-            while (true)
-            {
-                Console.WriteLine("Dochód czy Wydatek? (d/w): ");
-                incomeOrExpense = Console.ReadLine().ToUpper();
-                if (incomeOrExpense.Equals("D"))
-                {
-                    incomeOrExpense = "income";
-                    break;
-                }
-                else if (incomeOrExpense.Equals("W"))
-                {
-                    incomeOrExpense = "expense";
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("nieprawidłowy wybór");
-                }
-            }
-            Console.WriteLine("Nazwa kategorii: ");
-            string categoryName = Console.ReadLine();
-            return new Category(maxId + 1, incomeOrExpense, categoryName);
-        }
     }
 }

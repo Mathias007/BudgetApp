@@ -12,9 +12,9 @@ namespace BudgetApp
         Dictionary<string,string> ProgramOptions { get; }
         void ShowUsersList();
         void ShowCategoriesList();
-        void AddTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void EditTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
+        void AddTransactionReworked();
+        void EditTransactionReworked();
+        void PrintTransactionList();
         void HandleMenu(Dictionary<int, User> usersList, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
         void ManageProgramWorking();
     }
