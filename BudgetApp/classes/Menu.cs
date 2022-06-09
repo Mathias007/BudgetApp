@@ -30,7 +30,7 @@ namespace BudgetApp
         {
             Console.WriteLine("Lista wszystkich domowników:");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(" + [0]: dodaj nowego domownika"); //
+            Console.WriteLine(" + [0]: dodaj nowego domownika");
             foreach (KeyValuePair<int, User> record in usersList)
             {
                 Console.WriteLine(
@@ -39,8 +39,8 @@ namespace BudgetApp
                     $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
                     $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
             }
-            // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            // Dodaj usera
+            Console.WriteLine(" \n -> Wybierz 0, aby dodać nowego domownika. \n -> Jeżeli chcesz zmodyfikować dane istniejącego domownika, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
             string userInput = Console.ReadLine();
 
             if (String.IsNullOrWhiteSpace(userInput))
@@ -216,8 +216,25 @@ namespace BudgetApp
         public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
             // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
-            ShowFilterOptions(user.UserIsAdmin);
+               ShowFilterOptions(user.UserIsAdmin);
+
+            // Krok 1. Wybór kryterium filtrowania (switch <-> klawisz wg filterOptions)
+            // Krok 2. Wygenerowanie nowej listy transakcji, powstałej w rezultacie przefiltrowania głównej listy.
+            // Krok 3. Wyświetlenie w konsoli tabeli zawierającej dane z przefiltrowanej listy transakcji.
+            // Krok 4. Obsłużenie możliwości wyczyszczenia okna i zastosowania nowego kryterium filtrowania.
+            // Krok 5. Obsłużenie możliwości powrotu do głównego menu lub sekcji modyfikacji transakcji.
+
+         // Przykład filtrowania (do potencjalnego wykorzystania)
+         //   Dictionary<string, int> dict = new Dictionary<string, int>() {
+         //   {"A", 1}, {"B", 2}, {"C", 3}, {"D", 4}, {"E", 5}
+         //   };
+
+         //   Dictionary<string, int> filtered = dict.Where(x => x.Value % 2 == 0)
+         //                       .ToDictionary(x => x.Key, x => x.Value);
+
+         //   Console.WriteLine(String.Join(", ", filtered));
         }
+
         private void PrintMenuHeader(User user)
         {
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
