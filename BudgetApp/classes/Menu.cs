@@ -209,7 +209,12 @@ namespace BudgetApp
         }
         public void PrintTransactionList()
         {
-            //do implementacji
+            Console.Clear();
+            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+            {
+                Console.WriteLine($"[{transaction.Key}] : ");
+                transaction.Value.PrintProperties();
+            }
         }
 
         private void PrintMenuHeader(User user)
@@ -230,7 +235,9 @@ namespace BudgetApp
             if (Console.ReadKey().Key == ConsoleKey.T)
             {
                 Console.WriteLine("\n Dziękujemy za skorzystanie z aplikacji budżetowej");
-                Budget.SaveTransactionList(_budget._budget, Budget.fileNames["Transactions"]);
+                BudgetService.SaveTransactionList(transactionsList, BudgetService.fileNames["Transactions"]);
+                BudgetService.SaveCategoryList(categoriesList, BudgetService.fileNames["Categories"]);
+                BudgetService.SaveUserList(usersList, BudgetService.fileNames["Users"]);
                 _isProgramOpen = !_isProgramOpen;
             }
             Console.ForegroundColor = ConsoleColor.Gray;

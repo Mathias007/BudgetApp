@@ -21,33 +21,54 @@ namespace BudgetApp
 
         public static Dictionary<int, Transaction> LoadTransactionList(string fileName)
         {
-            //if (!File.Exists(GetDatabasePath(fileName)))
-            //{
-            //    using FileStream createStream = File.Create(GetDatabasePath(fileName));
-            //    return new Dictionary<int, Transaction>();
-            //}
-            //return JsonConvert.DeserializeObject<Dictionary<int, Transaction>>(File.ReadAllText(GetDatabasePath(fileName)));
-            return new Dictionary<int, Transaction>();
+            Dictionary<int, Transaction> returnDictionary = null;
+            if (!File.Exists(GetDatabasePath(fileName)))
+            {
+                using FileStream createStream = File.Create(GetDatabasePath(fileName));
+            }
+            else
+            {
+                returnDictionary = JsonConvert.DeserializeObject<Dictionary<int, Transaction>>(File.ReadAllText(GetDatabasePath(fileName)));
+            }
+            if (returnDictionary == null)
+            {
+                returnDictionary = new Dictionary<int, Transaction>();
+            }
+            return returnDictionary;
         }
         public static Dictionary<int, Category> LoadCategoryList(string fileName)
         {
-            //if (!File.Exists(GetDatabasePath(fileName)))
-            //{
-            //    using FileStream createStream = File.Create(GetDatabasePath(fileName));
-            //    return new Dictionary<int, Category>();
-            //}
-            //return JsonConvert.DeserializeObject<Dictionary<int, Category>>(File.ReadAllText(GetDatabasePath(fileName)));
-            return new Dictionary<int, Category>();
+            Dictionary<int, Category> returnDictionary = null;
+            if (!File.Exists(GetDatabasePath(fileName)))
+            {
+                using FileStream createStream = File.Create(GetDatabasePath(fileName));
+            }
+            else
+            {
+                returnDictionary =  JsonConvert.DeserializeObject<Dictionary<int, Category>>(File.ReadAllText(GetDatabasePath(fileName)));
+            }
+            if (returnDictionary == null)
+            {
+                returnDictionary = new Dictionary<int, Category>();
+            }
+            return returnDictionary;
         }
         public static Dictionary<int, User> LoadUserList(string fileName)
         {
-            //if (!File.Exists(GetDatabasePath(fileName)))
-            //{
-            //    using FileStream createStream = File.Create(GetDatabasePath(fileName));
-            //    return new Dictionary<int, User>();
-            //}
-            //return JsonConvert.DeserializeObject<Dictionary<int, User>>(File.ReadAllText(GetDatabasePath(fileName)));
-            return new Dictionary<int, User>();
+            Dictionary<int, User> returnDictionary = null;
+            if (!File.Exists(GetDatabasePath(fileName)))
+            {
+                using FileStream createStream = File.Create(GetDatabasePath(fileName));
+            }
+            else
+            {
+                returnDictionary = JsonConvert.DeserializeObject<Dictionary<int, User>>(File.ReadAllText(GetDatabasePath(fileName)));
+            }
+            if (returnDictionary == null)
+            {
+                returnDictionary = new Dictionary<int, User>();
+            }
+            return returnDictionary;
         }
 
         public static void SaveTransactionList(Dictionary<int, Transaction> transactionsList, string fileName)
