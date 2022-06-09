@@ -21,7 +21,7 @@ namespace BudgetApp
         public bool UserIsAdmin { get => _isAdmin; set => _isAdmin = value; }
         public bool IsActive { get => _isActive; set => _isActive = value; }
 
-        public User(int id, string firstName, string lastName, bool isActive, bool isAdmin)
+        public User(int id, string firstName, string lastName, bool isActive = true, bool isAdmin = false)
         {
             _id = id;
             _firstName = firstName;
@@ -29,7 +29,7 @@ namespace BudgetApp
             _isActive = isActive;
             _isAdmin = isAdmin;
         }
-        public static User addUser(int maxId)
+        private static User addUser(int maxId) //do usunięcia
         {
             Console.WriteLine("Imię: ");
             string firstName = Console.ReadLine();

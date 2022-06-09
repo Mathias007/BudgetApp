@@ -25,7 +25,7 @@ namespace BudgetApp
             _name = name;
             _isActive = true; //nie ma żadnego powodu żeby kategoria którą właśnie dodaliśmy była nieaktywna
         }
-        public static Category addCategory(int maxId)
+        private static Category addCategory(int maxId) // do usunięcia
         {
             string incomeOrExpense = "";
             while (true)
