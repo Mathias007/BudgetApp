@@ -30,7 +30,7 @@ namespace BudgetApp
         {
             Console.WriteLine("Lista wszystkich domowników:");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(" + [0]: dodaj nowego domownika"); //
+            Console.WriteLine(" + [0]: dodaj nowego domownika");
             foreach (KeyValuePair<int, User> record in usersList)
             {
                 Console.WriteLine(
@@ -39,8 +39,8 @@ namespace BudgetApp
                     $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
                     $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
             }
-            // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            // Dodaj usera
+            Console.WriteLine(" \n -> Wybierz 0, aby dodać nowego domownika. \n -> Jeżeli chcesz zmodyfikować dane istniejącego domownika, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
             string userInput = Console.ReadLine();
 
             if (String.IsNullOrWhiteSpace(userInput))

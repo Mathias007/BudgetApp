@@ -15,16 +15,17 @@ namespace BudgetApp
         public Dictionary<int, Transaction> BudgetData { get => _budget; set => _budget = value; }
         public string BudgetSelector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public double BudgetBalance { get => _balance; set => _balance = value; }
-        public Dictionary<string, (double CategoryAmount, double CategoryPercentage )> BudgetStructure { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Dictionary<string, (double CategoryAmount, double CategoryPercentage)> BudgetStructure { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Budget(Dictionary<int, Transaction> initialBudget)
         {
-           _budget = initialBudget;
+            _budget = initialBudget;
         }
 
         public void UpdateBudget(Dictionary<int, Transaction> newData) => _budget = newData;
 
-        public void CalculateBalance() {
+        public void CalculateBalance()
+        {
             foreach (KeyValuePair<int, Transaction> record in _budget) _balance += record.Value.TransactionAmount;
 
             Console.WriteLine($"Stan konta: {_balance}");
@@ -51,8 +52,8 @@ namespace BudgetApp
 
             foreach (KeyValuePair<string, (double amount, double percentage)> record in _budgetStructure)
             {
-                Console.WriteLine($" + {record.Key}: {record.Value.amount} PLN ({record.Value.percentage}%)");                  
+                Console.WriteLine($" + {record.Key}: {record.Value.amount} PLN ({record.Value.percentage}%)");
             }
         }
-
     }
+}

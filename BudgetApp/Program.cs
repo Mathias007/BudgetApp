@@ -12,7 +12,7 @@ namespace BudgetApp
 
             Menu menu = new(budget);
 
-            Category firstCategory = new(1, "income", "Wynagrodzenie"); //ID miały się zaczynać od 1
+            Category firstCategory = new(1, "income", "Wynagrodzenie");
             User firstUser = new(1, "Jan", "Kowalski", true, true);
 
             Transaction firstTransaction = new(
