@@ -84,14 +84,15 @@ namespace BudgetApp
                 usersList.Add(addingUser.UserID, addingUser);
                 return;
             }
+            Console.Clear();
             Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[consoleID].UserFirstName}): ");
             string newFirstName = Console.ReadLine();
             usersList[consoleID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[consoleID].UserFirstName : newFirstName;
-
+            Console.Clear();
             Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[consoleID].UserLastName}): ");
             string newLastName = Console.ReadLine();
             usersList[consoleID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[consoleID].UserLastName : newLastName;
-
+            Console.Clear();
             Console.WriteLine($"Domownik jest aktywny({usersList[consoleID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
             string newActiveStatus = Console.ReadLine().ToUpper();
             if (newActiveStatus.Equals("T"))
@@ -115,6 +116,7 @@ namespace BudgetApp
             //dodaj kategorię
             Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
             int consoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
+            Console.Clear();
             if (consoleID == -1)
             {
                 Console.Clear();
@@ -143,16 +145,18 @@ namespace BudgetApp
                         Console.WriteLine("nieprawidłowy wybór");
                     }
                 }
+                Console.Clear();
                 Console.WriteLine("Nazwa kategorii: ");
                 string categoryName = Console.ReadLine();
                 Category addingCategory = new Category(newCategoryID, incomeOrExpense, categoryName);
                 categoriesList.Add(addingCategory.CategoryID, addingCategory);
                 return;
             }
+            Console.Clear();
             Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[consoleID].CategoryName}): ");
             string newCategoryName = Console.ReadLine();
             categoriesList[consoleID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[consoleID].CategoryName : newCategoryName;
-
+            Console.Clear();
             Console.WriteLine($"Kategoria jest aktywna({categoriesList[consoleID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
             string newActiveStatus = Console.ReadLine().ToUpper();
             if (newActiveStatus.Equals("T"))
@@ -172,19 +176,20 @@ namespace BudgetApp
             Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
             printCategoriesList(true);
             int selectedCategoryID = GetConsoleInput<Category>.GetUserInputID(categoriesList, true);
-
+            Console.Clear();
             double transactionAmmount = GetConsoleInput.UserInputTransactionAmmount(false);
-
+            Console.Clear();
             Console.Write("Wprowadź opis transakcji (pole opcjonalne): ");
             string description = Console.ReadLine();
-
+            Console.Clear();
             Console.WriteLine("Do którego domownika należy ta transakcja?");
             printUserList(false);
             int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, true);
-
+            Console.Clear();
             DateTimeOffset date = GetConsoleInput.ChooseDateOfTransaction();
 
             transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmmount, description, usersList[selectedUserID], date));
+            Console.Clear();
         }
         public void EditTransactionReworked(int selectedTransactionID)
         {
@@ -201,20 +206,20 @@ namespace BudgetApp
                     printCategoriesList(true);
                     int selectedNewCategoryID = GetConsoleInput<Category>.GetUserInputID(categoriesList, true);
                     transactionsList[selectedTransactionID].TransactionCategory = selectedNewCategoryID == -1 ? transactionsList[selectedTransactionID].TransactionCategory : categoriesList[selectedNewCategoryID];
-
+                    Console.Clear();
                     Console.WriteLine($"Wpisz nową kwotę ({oldTransaction.TransactionAmount}), zostaw puste żeby nie zmieniać");
                     double newAmmount = GetConsoleInput.UserInputTransactionAmmount(true);
                     transactionsList[selectedTransactionID].TransactionAmount = newAmmount == -1 ? transactionsList[selectedTransactionID].TransactionAmount : newAmmount;
-
+                    Console.Clear();
                     Console.WriteLine($"Wpisz nowy opis transakcji {oldTransaction.TransactionDescription}, zostaw puste żeby nie zmieniać"); //ogarnąć żeby wyświetlało to estetycznie
                     string newDescription = Console.ReadLine();
                     transactionsList[selectedTransactionID].TransactionDescription = string.IsNullOrWhiteSpace(newDescription) ? transactionsList[selectedTransactionID].TransactionDescription : newDescription;
-
+                    Console.Clear();
                     Console.WriteLine($"Przypisz tą transakcje do innego domownika ({oldTransaction.TransactionUser.UserFirstName} {oldTransaction.TransactionUser.UserLastName}), zostaw puste żeby nie zmieniać");
                     printUserList(true);
                     int selectedNewUserID = GetConsoleInput<User>.GetUserInputID(usersList, true);
                     transactionsList[selectedTransactionID].TransactionUser = selectedNewUserID == -1 ? transactionsList[selectedTransactionID].TransactionUser : usersList[selectedNewUserID];
-
+                    Console.Clear();
                     Console.WriteLine($"Zmienić datę tej transakcji? {oldTransaction.TransactionDate.ToString("dd-MM-yyyy")} (t/n)");
                     if (Console.ReadLine().ToUpper().Equals("T"))
                     {
@@ -345,10 +350,18 @@ namespace BudgetApp
                             ShowCategoriesList();
                             break;
                         case ConsoleKey.C:
-                            GetTransactionByCategory(GetConsoleInput<User>.GetUserInputID(usersList, false));
+                            printUserList(false);
+                            int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
+                            if (selectedUserID == -1)
+                                return;
+                            GetTransactionByUser(selectedUserID);
                             break;
                         case ConsoleKey.U:
-                            GetTransactionByCategory(GetConsoleInput<Category>.GetUserInputID(categoriesList, false));
+                            printCategoriesList(false);
+                            int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
+                            if (selectedConsoleID == -1)
+                                return;
+                            GetTransactionByCategory(selectedConsoleID);
                             break;
                         default:
                             ManageProgramWorking();
@@ -422,7 +435,6 @@ namespace BudgetApp
                     {
                         Console.WriteLine($"podana wartość {selectedID} jest niepoprawna, wpisz wartość numeryczną");
                     }
-                    selectedID = Console.ReadLine();
                 }
             }
         }
