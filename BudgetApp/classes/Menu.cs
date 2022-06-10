@@ -27,6 +27,34 @@ namespace BudgetApp
             usersList = BudgetService.LoadUserList(BudgetService.fileNames["Users"]);
             categoriesList = BudgetService.LoadCategoryList(BudgetService.fileNames["Categories"]);
         }
+        public Dictionary<int, Transaction> GetTransactionByCategory(int selectedCategoryID)
+        {
+            Dictionary<int, Transaction> selectedCategoryTransaciton = new();
+            var selectedCategory = categoriesList[selectedCategoryID]; //bez walidacji, walidacja bedzie tam gdzie będzie ta metoda jest wywoływana
+            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+            {
+                if (selectedCategory.Equals(transaction.Value.TransactionCategory))
+                {
+                    selectedCategoryTransaciton.Add(transaction.Key, transaction.Value);
+                }
+            }
+            PrintTransactionList(selectedCategoryTransaciton);
+            return selectedCategoryTransaciton;
+        }
+        public Dictionary<int, Transaction> GetTransactionByUser(int selectedUserID)
+        {
+            Dictionary<int, Transaction> selectedUserTransaciton = new();
+            var selectedUser = usersList[selectedUserID]; //bez walidacji, walidacja bedzie tam gdzie będzie ta metoda jest wywoływana
+            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+            {
+                if (selectedUser.Equals(transaction.Value.TransactionUser))
+                {
+                    selectedUserTransaciton.Add(transaction.Key, transaction.Value);
+                }
+            }
+            PrintTransactionList(selectedUserTransaciton);
+            return selectedUserTransaciton;
+        }
 
         public void ShowUsersList()
         {
@@ -205,6 +233,10 @@ namespace BudgetApp
         }
         public void PrintTransactionList()
         {
+            PrintTransactionList(transactionsList);
+        }
+        public void PrintTransactionList(Dictionary<int, Transaction> transactionList)
+        {
             Console.Clear();
             Console.WriteLine("[0] - dodaj nową transakcje");
             foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
@@ -244,7 +276,6 @@ namespace BudgetApp
                 Console.WriteLine($" {option.Key} - {option.Value}");
             }
         }
-
         public void ManageProgramWorking()
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -260,7 +291,6 @@ namespace BudgetApp
             }
             Console.ForegroundColor = ConsoleColor.Gray;
         }
-
         public void HandleMenu(Dictionary<int, User> usersList, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
             if (user.UserIsActive)
