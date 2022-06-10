@@ -7,10 +7,10 @@ namespace BudgetApp
     {
         public static void Main()
         {
-            Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
-            budget.CalculateBalance();
 
-            Menu menu = new(budget);
+            Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
+
+            Menu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie"); //ID miały się zaczynać od 1
             User firstUser = new(1, "Jan", "Kowalski", true, true);
@@ -33,16 +33,17 @@ namespace BudgetApp
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
             //menu.HandleMenu(users, transactions, categories, firstUser);
-
             testUserlist();
+        }
+        private static void testNowego()
+        {
 
         }
         private static void testUserlist()
         {
             Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
-            budget.CalculateBalance();
 
-            Menu menu = new(budget);
+            Menu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie"); //ID miały się zaczynać od 1
             Category category1 = new(2, "income", "dochód z wynajętego mieszkania");
@@ -78,8 +79,26 @@ namespace BudgetApp
             usersTest.Add(user2.UserID, user2);
             usersTest.Add(user3.UserID, user3);
 
-            menu.HandleMenu(usersTest, transactions, categories, firstUser);
-
+            menu.HandleMenu(firstUser);
         }
+        public static DateTimeOffset ChooseDateOfTransaction()
+        {
+            Console.WriteLine("Jeśli transakcja jest z dzisiaj zostaw puste pole, w innym wypadku wprowadź datę w formacie DD-MM-RRRR");
+            while (true)
+            {
+                string consoleInput = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(consoleInput))
+                {
+                    return DateTimeOffset.Now;
+                }
+                DateTimeOffset returnDate = DateTimeOffset.MinValue;
+                if (DateTimeOffset.TryParseExact(consoleInput, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out returnDate))
+                {
+                    return returnDate;
+                }
+                Console.WriteLine($"Nieprawidłowy format daty! ma być w formacie DD-MM-RRRR, przykład - dzisiaj jest {DateTimeOffset.Now.ToString("dd-MM-yyyy")}");
+            }
+        }
+
     }
 }

@@ -19,22 +19,15 @@ namespace BudgetApp
         public string UserLastName { get => _lastName; set => _lastName = value; }
         public bool UserIsActive { get => _isActive; set => _isActive = value; }
         public bool UserIsAdmin { get => _isAdmin; set => _isAdmin = value; }
+        public bool IsActive { get => _isActive; set => _isActive = value; }
 
-        public User(int id, string firstName, string lastName, bool isActive, bool isAdmin)
+        public User(int id, string firstName, string lastName, bool isActive = true, bool isAdmin = false)
         {
             _id = id;
             _firstName = firstName;
             _lastName = lastName;
             _isActive = isActive;
             _isAdmin = isAdmin;
-        }
-        public static User addUser(int maxId)
-        {
-            Console.WriteLine("Imię: ");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Nazwisko: ");
-            string lastName = Console.ReadLine();
-            return new User(maxId + 1, firstName, lastName, true, false);
         }
     }
 }
