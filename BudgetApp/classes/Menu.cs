@@ -15,6 +15,8 @@ namespace BudgetApp
             { "[w]", "Wyświetl listę domowników" },
             { "[d]", "Wyświetl transakcje" },
             { "[f]", "Wyświetl listę kategorii"},
+            { "[c]", "Wyświetl transakcje wg kategorii"},
+            { "[u]", "Wyświetl transakcje wg użytkownika" }
         };
         private Budget _budget;
 
@@ -235,15 +237,40 @@ namespace BudgetApp
         {
             PrintTransactionList(transactionsList);
         }
-        public void PrintTransactionList(Dictionary<int, Transaction> transactionList)
+        public void PrintTransactionList(Dictionary<int, Transaction> customTransactionList)
         {
             Console.Clear();
             Console.WriteLine("[0] - dodaj nową transakcje");
-            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+            bool colorChanger = false;
+            foreach (KeyValuePair<int, Transaction> transaction in customTransactionList)
             {
+                if (colorChanger)
+                {
+                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    }
+                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                    }
+                }
+                else if (!colorChanger)
+                {
+                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                }
                 Console.WriteLine($"[{transaction.Key}] : ");
                 transaction.Value.PrintProperties();
+                colorChanger = colorChanger ? false : true ;
             }
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wybierz opcje/id, zostaw puste żeby wrócić do menu[??] nie wiem jak to opisać żeby miało sens"); //help
             while (true)
             {
@@ -269,6 +296,7 @@ namespace BudgetApp
         }
         private void PrintMenuHeader(User user)
         {
+            Console.Clear();
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
 
             foreach (KeyValuePair<string, string> option in _programOptions)
@@ -291,7 +319,7 @@ namespace BudgetApp
             }
             Console.ForegroundColor = ConsoleColor.Gray;
         }
-        public void HandleMenu(Dictionary<int, User> usersList, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
+        public void HandleMenu(User user)
         {
             if (user.UserIsActive)
             {
@@ -316,12 +344,16 @@ namespace BudgetApp
                         case ConsoleKey.F:
                             ShowCategoriesList();
                             break;
-
+                        case ConsoleKey.C:
+                            GetTransactionByCategory(GetConsoleInput<User>.GetUserInputID(usersList, false));
+                            break;
+                        case ConsoleKey.U:
+                            GetTransactionByCategory(GetConsoleInput<Category>.GetUserInputID(categoriesList, false));
+                            break;
                         default:
                             ManageProgramWorking();
                             break;
                     }
-
                 } while (_isProgramOpen);
             } else
             {
@@ -366,11 +398,11 @@ namespace BudgetApp
             internal static int GetUserInputID(Dictionary<int, T> transactionObjectDictionary, bool chooseOnlyActive)
             {
                 Console.WriteLine("Wpisz id które chcesz wybrać:");
-                string selectedID = Console.ReadLine();
                 int returnID = -1;
                 while (true)
                 {
-                    if (string.IsNullOrWhiteSpace(selectedID))
+                    string selectedID = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(selectedID) && !chooseOnlyActive)
                     {
                         return -1;
                     }
@@ -418,9 +450,9 @@ namespace BudgetApp
             {
                 Console.WriteLine("Wprowadź kwotę PLN");
                 double transactionAmmount = -1;
-                string consoleInput = Console.ReadLine();
                 while (true)
                 {
+                    string consoleInput = Console.ReadLine();
                     if (allowEmpty ? string.IsNullOrWhiteSpace(consoleInput) : false)
                     {
                         return -1;
@@ -436,8 +468,6 @@ namespace BudgetApp
                     Console.WriteLine("w tym miejscu wpisujemy wyłącznie liczbę");
                 }
             }
-
-
         }
 
     }

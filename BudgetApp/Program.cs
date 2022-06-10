@@ -79,9 +79,7 @@ namespace BudgetApp
             usersTest.Add(user2.UserID, user2);
             usersTest.Add(user3.UserID, user3);
 
-            menu.HandleMenu(usersTest, transactions, categories, firstUser);
-
-            
+            menu.HandleMenu(firstUser);
         }
         public static DateTimeOffset ChooseDateOfTransaction()
         {
