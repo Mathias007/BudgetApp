@@ -10,12 +10,12 @@ namespace BudgetApp
     {
         bool IsProgramOpen { get; set; }
         Dictionary<string,string> ProgramOptions { get; }
-        void ShowUsersList(Dictionary<int, User> usersList);
-        void AddTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void EditTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void HandleMenu(Dictionary<int, User> usersList, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user);
-        void ShowCategoriesList(Dictionary<int, Category> categoriesList);
+        void ShowUsersList();
+        void ShowCategoriesList();
+        void AddTransactionReworked();
+        void EditTransactionReworked(int selectedTransactionID);
+        void PrintTransactionList();
+        void HandleMenu(User user);
         void ManageProgramWorking();
     }
 }
