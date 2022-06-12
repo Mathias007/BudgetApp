@@ -63,59 +63,29 @@ namespace BudgetApp
             Console.Clear();
             Console.WriteLine("Lista wszystkich domowników:");
             Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine(" + [0]: dodaj nowego domownika"); //
             printUserList(false);
-            // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+            Console.WriteLine(" \n -> Wybierz 0, aby dodać nowego domownika. \n -> Jeżeli chcesz zmodyfikować dane istniejącego domownika, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
+
             int consoleID = GetConsoleInput<User>.GetUserInputID(usersList, false);
             if (consoleID == -1)
-            Console.WriteLine(" + [0]: dodaj nowego domownika");
-            foreach (KeyValuePair<int, User> record in usersList)
-            {
-                Console.WriteLine(
-                    $" + [{record.Key}]: " +
-                    $"{record.Value.UserFirstName} {record.Value.UserLastName} " +
-                    $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
-                    $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
-            }
-            // Dodaj usera
-            Console.WriteLine(" \n -> Wybierz 0, aby dodać nowego domownika. \n -> Jeżeli chcesz zmodyfikować dane istniejącego domownika, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
-            string userInput = Console.ReadLine();
-
-            if (String.IsNullOrWhiteSpace(userInput))
-
             {
                 Console.Clear();
                 return;
             }
             if (consoleID == 0)
             {
-                int newUserID = usersList.Count == 0 ? 1 : usersList.Keys.Max() + 1;
-                Console.WriteLine("Imię: ");
-                string firstName = Console.ReadLine();
-                Console.WriteLine("Nazwisko: ");
-                string lastName = Console.ReadLine();
-                User addingUser = new User(newUserID, firstName, lastName);
-                usersList.Add(addingUser.UserID, addingUser);
-                return;
+                var createdUser = User.createUser(usersList);
+                usersList.Add(createdUser.UserID,createdUser);
             }
-            Console.Clear();
-            Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[consoleID].UserFirstName}): ");
-            string newFirstName = Console.ReadLine();
-            usersList[consoleID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[consoleID].UserFirstName : newFirstName;
-            Console.Clear();
-            Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[consoleID].UserLastName}): ");
-            string newLastName = Console.ReadLine();
-            usersList[consoleID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[consoleID].UserLastName : newLastName;
-            Console.Clear();
-            Console.WriteLine($"Domownik jest aktywny({usersList[consoleID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
-            string newActiveStatus = Console.ReadLine().ToUpper();
-            if (newActiveStatus.Equals("T"))
-                usersList[consoleID].UserIsActive = true;
-            else if (newActiveStatus.Equals("N"))
-                usersList[consoleID].UserIsActive = false;
-            // koniec dodaj usera
+            else if (usersList.ContainsKey(consoleID))
+            {
+                var editedUser = User.editUser(usersList[consoleID]);
+                usersList[consoleID] = editedUser;
+            }
+            else
+            {
+                Console.WriteLine("Podane id nie istnieje");
+            }
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
         }
@@ -125,61 +95,26 @@ namespace BudgetApp
             Console.Clear();
             Console.WriteLine("Lista wszystkich kategorii:");
             Console.ForegroundColor = ConsoleColor.Yellow;
-
-
-            Console.WriteLine(" + [0]: dodaj kategorię");
             printCategoriesList(false);
-            //dodaj kategorię
             Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
+
             int consoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
-            Console.Clear();
             if (consoleID == -1)
             {
                 Console.Clear();
                 return;
             }
-            if (consoleID == 0)
+            else if (consoleID == 0)
             {
-                int newCategoryID = categoriesList.Count == 0 ? 1 : categoriesList.Keys.Max() + 1;
-                string incomeOrExpense = "";
-                while (true)
-                {
-                    Console.WriteLine("Dochód czy Wydatek? (d/w): ");
-                    incomeOrExpense = Console.ReadLine().ToUpper();
-                    if (incomeOrExpense.Equals("D"))
-                    {
-                        incomeOrExpense = "income";
-                        break;
-                    }
-                    else if (incomeOrExpense.Equals("W"))
-                    {
-                        incomeOrExpense = "expense";
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("nieprawidłowy wybór");
-                    }
-                }
-                Console.Clear();
-                Console.WriteLine("Nazwa kategorii: ");
-                string categoryName = Console.ReadLine();
-                Category addingCategory = new Category(newCategoryID, incomeOrExpense, categoryName);
-                categoriesList.Add(addingCategory.CategoryID, addingCategory);
-                return;
+                var createdCategory = Category.createCategory(categoriesList);
+                categoriesList.Add(createdCategory.CategoryID, createdCategory);
+            }
+            else if (categoriesList.ContainsKey(consoleID))
+            {
+                var editedCategory = Category.editCategory(categoriesList[consoleID]);
+                categoriesList[consoleID] = editedCategory;
             }
             Console.Clear();
-            Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[consoleID].CategoryName}): ");
-            string newCategoryName = Console.ReadLine();
-            categoriesList[consoleID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[consoleID].CategoryName : newCategoryName;
-            Console.Clear();
-            Console.WriteLine($"Kategoria jest aktywna({categoriesList[consoleID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
-            string newActiveStatus = Console.ReadLine().ToUpper();
-            if (newActiveStatus.Equals("T"))
-                categoriesList[consoleID].IsActive = true;
-            else if (newActiveStatus.Equals("N"))
-                categoriesList[consoleID].IsActive = false;
-            // koniec dodawania kategorii
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
         }
@@ -319,7 +254,7 @@ namespace BudgetApp
         public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
         {
             // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
-               ShowFilterOptions(user.UserIsAdmin);
+            //   ShowFilterOptions(user.UserIsAdmin);
 
             // Krok 1. Wybór kryterium filtrowania (switch <-> klawisz wg filterOptions)
             // Krok 2. Wygenerowanie nowej listy transakcji, powstałej w rezultacie przefiltrowania głównej listy.
@@ -449,7 +384,6 @@ namespace BudgetApp
         {
             internal static int GetUserInputID(Dictionary<int, T> transactionObjectDictionary, bool chooseOnlyActive)
             {
-                Console.WriteLine("Wpisz id które chcesz wybrać:");
                 int returnID = -1;
                 while (true)
                 {

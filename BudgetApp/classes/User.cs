@@ -29,5 +29,32 @@ namespace BudgetApp
             _isActive = isActive;
             _isAdmin = isAdmin;
         }
+        public static User createUser(Dictionary<int,User> userList)
+        {
+            int newUserID = userList.Count == 0 ? 1 : userList.Keys.Max() + 1;
+            Console.WriteLine("Imię: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Nazwisko: ");
+            string lastName = Console.ReadLine();
+            return new User(newUserID, firstName, lastName);
+        }
+        public static User editUser(User userToBeEdited)
+        {
+            Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({userToBeEdited.UserFirstName}): ");
+            string newFirstName = Console.ReadLine();
+            userToBeEdited.UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? userToBeEdited.UserFirstName : newFirstName;
+            Console.Clear();
+            Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({userToBeEdited.UserLastName}): ");
+            string newLastName = Console.ReadLine();
+            userToBeEdited.UserLastName = String.IsNullOrWhiteSpace(newLastName) ? userToBeEdited.UserLastName : newLastName;
+            Console.Clear();
+            Console.WriteLine($"Domownik jest aktywny({userToBeEdited.UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
+            string newActiveStatus = Console.ReadLine().ToUpper();
+            if (newActiveStatus.Equals("T"))
+                userToBeEdited.UserIsActive = true;
+            else if (newActiveStatus.Equals("N"))
+                userToBeEdited.UserIsActive = false;
+            return userToBeEdited; //można przerobić żeby tworzyło nowego usera zamiast edytować
+        }
     }
 }
