@@ -6,9 +6,6 @@ namespace BudgetApp
 {
     public class Menu : Budget, IMenu
     {
-       // private static readonly Dictionary<int, Transaction> transactionsList;
-       // private static readonly Dictionary<int, User> usersList;
-       // private static readonly Dictionary<int, Category> categoriesList;
         private static bool _isProgramOpen = true;
         private static readonly Dictionary<string, string> _programOptions = new()
         {
@@ -18,28 +15,11 @@ namespace BudgetApp
             { "[c]", "Wyświetl transakcje wg kategorii"},
             { "[u]", "Wyświetl transakcje wg użytkownika" }
         };
-        // private Budget _budget;
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
         public Dictionary<string, string> ProgramOptions { get => _programOptions; }
 
-        //public Menu()
-        //{
-        //    transactionsList = LoadTransactionList(fileNames["Transactions"]);
-        //    usersList = LoadUserList(fileNames["Users"]);
-        //    categoriesList = LoadCategoryList(fileNames["Categories"]);
-        //}
-
         private static void PrintMenuHeader(User user)
-        public Menu()
-        {
-            transactionsList = BudgetService.LoadTransactionList(BudgetService.fileNames["Transactions"]);
-            usersList = BudgetService.LoadUserList(BudgetService.fileNames["Users"]);
-            categoriesList = BudgetService.LoadCategoryList(BudgetService.fileNames["Categories"]);
-        }
-
-        private void PrintMenuHeader(User user)
-
         {
             Console.Clear();
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");

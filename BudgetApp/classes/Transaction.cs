@@ -30,7 +30,6 @@ namespace BudgetApp
             _date = date;
         }
 
-
         public static Dictionary<int, Transaction> GetTransactionByCategory(int selectedCategoryID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
             Dictionary<int, Transaction> selectedCategoryTransaciton = new();

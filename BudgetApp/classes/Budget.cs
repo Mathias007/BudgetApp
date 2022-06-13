@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BudgetApp
 {
     public class Budget : BudgetService, IBudget
     {
-        public Dictionary<int, Transaction> _budget;
-        public double _balance = 0;
-        public Dictionary<string, (double, double)> _budgetStructure;
+        private Dictionary<int, Transaction> _budget;
+        private double _balance = 0;
+        private Dictionary<string, (double, double)> _budgetStructure;
 
         internal static Dictionary<int, Transaction> transactionsList;
         internal static Dictionary<int, User> usersList;
@@ -23,8 +21,7 @@ namespace BudgetApp
 
         public Budget()
         {
-            _budget = LoadTransactionList(fileNames["Transactions"]);
-            transactionsList = LoadTransactionList(fileNames["Transactions"]);
+            _budget = transactionsList = LoadTransactionList(fileNames["Transactions"]);
             usersList = LoadUserList(fileNames["Users"]);
             categoriesList = LoadCategoryList(fileNames["Categories"]);
         }
