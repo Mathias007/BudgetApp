@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace BudgetApp
 {
-    public class User : IUser
+    public class User : BudgetElement, IUser
     {
-        private int _id;
         private string _firstName;
         private string _lastName;
         private bool _isActive;
@@ -26,6 +25,15 @@ namespace BudgetApp
             _lastName = lastName;
             _isActive = isActive;
             _isAdmin = isAdmin;
+        }
+
+        public override void PrintProperties()
+        {
+            Console.WriteLine($"id: {_id} \n" +
+                $"firstName: {_firstName} \n" +
+                $"lastName: {_lastName} \n" +
+                $"isActive: {_isActive} \n" +
+                $"isAdmin: {_isAdmin} \n");
         }
 
         public static void PrintUsers(bool onlyActive, Dictionary<int, User> usersList)

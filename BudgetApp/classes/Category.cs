@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace BudgetApp
 {
-    public class Category : ICategory
+    public class Category : BudgetElement, ICategory
     {
-        private int _id;
         private string _type;
         private string _name;
         private bool _isActive;
@@ -22,6 +21,14 @@ namespace BudgetApp
             _type = type;
             _name = name;
             _isActive = true;
+        }
+
+        public override void PrintProperties()
+        {
+            Console.WriteLine($"id: {_id} \n" +
+                $"categoryName: {_type} \n" +
+                $"categoryType: {_name} \n" +
+                $"isActive: {_isActive} \n");
         }
         public static void PrintCategories(bool onlyActive, Dictionary<int, Category> categoriesList)
         {

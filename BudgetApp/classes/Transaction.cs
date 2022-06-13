@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace BudgetApp
 {
-    public class Transaction : BudgetService, ITransaction
+    public class Transaction : BudgetElement, ITransaction
     {
-        private int _id;
         private Category _category;
         private double _amount;
         private string _description;
@@ -28,6 +27,17 @@ namespace BudgetApp
             _description = description;
             _user = user;
             _date = date;
+        }
+
+        public override void PrintProperties()
+        {
+            Console.WriteLine($"id: {_id} \n" +
+                $"categoryName: {_category.CategoryName} \n" +
+                $"categoryType: {_category.CategoryType} \n" +
+                $"amount: {_amount} \n" +
+                $"description: {_description} \n" +
+                $"user: {_user.UserFirstName} {_user.UserLastName} \n" +
+                $"date: {_date}");
         }
 
         public static Dictionary<int, Transaction> GetTransactionByCategory(int selectedCategoryID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
@@ -188,17 +198,6 @@ namespace BudgetApp
                 }
                 Console.WriteLine("podanego id nie ma na liscie transakcji");
             }
-        }
-
-        public void PrintProperties()
-        {
-            Console.WriteLine($"id: {_id} \n" +
-                $"categoryName: {_category.CategoryName} \n" +
-                $"categoryType: {_category.CategoryType} \n" +
-                $"amount: {_amount} \n" +
-                $"description: {_description} \n" +
-                $"user: {_user.UserFirstName} {_user.UserLastName} \n" +
-                $"date: {_date}");
         }
     }
 }
