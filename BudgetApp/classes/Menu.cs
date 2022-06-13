@@ -31,6 +31,15 @@ namespace BudgetApp
         //}
 
         private static void PrintMenuHeader(User user)
+        public Menu()
+        {
+            transactionsList = BudgetService.LoadTransactionList(BudgetService.fileNames["Transactions"]);
+            usersList = BudgetService.LoadUserList(BudgetService.fileNames["Users"]);
+            categoriesList = BudgetService.LoadCategoryList(BudgetService.fileNames["Categories"]);
+        }
+
+        private void PrintMenuHeader(User user)
+
         {
             Console.Clear();
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
@@ -108,7 +117,6 @@ namespace BudgetApp
                 ManageProgramWorking();
             }
                 Console.ReadKey();
-        }
-       
+        }      
     }
 }

@@ -25,7 +25,6 @@ namespace BudgetApp
             _name = name;
             _isActive = true;
         }
-
         public static void PrintCategories(bool onlyActive, Dictionary<int, Category> categoriesList)
         {
             foreach (KeyValuePair<int, Category> record in categoriesList)
@@ -111,9 +110,6 @@ namespace BudgetApp
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n");
-        }
-
-
-  
+        }   
     }
 }
