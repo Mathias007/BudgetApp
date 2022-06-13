@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace BudgetApp
 {
-    public class Menu : IMenu
+    public class Menu : Budget, IMenu
     {
-        private readonly Dictionary<int, Transaction> transactionsList;
-        private readonly Dictionary<int, User> usersList;
-        private readonly Dictionary<int, Category> categoriesList;
-        private bool _isProgramOpen = true;
-        private readonly Dictionary<string, string> _programOptions = new()
+       // private static readonly Dictionary<int, Transaction> transactionsList;
+       // private static readonly Dictionary<int, User> usersList;
+       // private static readonly Dictionary<int, Category> categoriesList;
+        private static bool _isProgramOpen = true;
+        private static readonly Dictionary<string, string> _programOptions = new()
         {
             { "[w]", "Wyświetl listę domowników" },
             { "[d]", "Wyświetl transakcje" },
@@ -18,327 +18,19 @@ namespace BudgetApp
             { "[c]", "Wyświetl transakcje wg kategorii"},
             { "[u]", "Wyświetl transakcje wg użytkownika" }
         };
-        private Budget _budget;
+        // private Budget _budget;
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
         public Dictionary<string, string> ProgramOptions { get => _programOptions; }
 
-        public Menu()
-        {
-            transactionsList = BudgetService.LoadTransactionList(BudgetService.fileNames["Transactions"]);
-            usersList = BudgetService.LoadUserList(BudgetService.fileNames["Users"]);
-            categoriesList = BudgetService.LoadCategoryList(BudgetService.fileNames["Categories"]);
-        }
-        public Dictionary<int, Transaction> GetTransactionByCategory(int selectedCategoryID)
-        {
-            Dictionary<int, Transaction> selectedCategoryTransaciton = new();
-            var selectedCategory = categoriesList[selectedCategoryID]; //bez walidacji, walidacja bedzie tam gdzie będzie ta metoda jest wywoływana
-            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
-            {
-                if (selectedCategory.Equals(transaction.Value.TransactionCategory))
-                {
-                    selectedCategoryTransaciton.Add(transaction.Key, transaction.Value);
-                }
-            }
-            PrintTransactionList(selectedCategoryTransaciton);
-            return selectedCategoryTransaciton;
-        }
-        public Dictionary<int, Transaction> GetTransactionByUser(int selectedUserID)
-        {
-            Dictionary<int, Transaction> selectedUserTransaciton = new();
-            var selectedUser = usersList[selectedUserID]; //bez walidacji, walidacja bedzie tam gdzie będzie ta metoda jest wywoływana
-            foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
-            {
-                if (selectedUser.Equals(transaction.Value.TransactionUser))
-                {
-                    selectedUserTransaciton.Add(transaction.Key, transaction.Value);
-                }
-            }
-            PrintTransactionList(selectedUserTransaciton);
-            return selectedUserTransaciton;
-        }
+        //public Menu()
+        //{
+        //    transactionsList = LoadTransactionList(fileNames["Transactions"]);
+        //    usersList = LoadUserList(fileNames["Users"]);
+        //    categoriesList = LoadCategoryList(fileNames["Categories"]);
+        //}
 
-        public void ShowUsersList()
-        {
-            Console.Clear();
-            Console.WriteLine("Lista wszystkich domowników:");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine(" + [0]: dodaj nowego domownika"); //
-            printUserList(false);
-            // Dodaj usera | komentaż daję żebyś ogarnął co dopisałem, usuń komentaż
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
-            int consoleID = GetConsoleInput<User>.GetUserInputID(usersList, false);
-            if (consoleID == -1)
-            Console.WriteLine(" + [0]: dodaj nowego domownika");
-            foreach (KeyValuePair<int, User> record in usersList)
-            {
-                Console.WriteLine(
-                    $" + [{record.Key}]: " +
-                    $"{record.Value.UserFirstName} {record.Value.UserLastName} " +
-                    $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
-                    $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
-            }
-            // Dodaj usera
-            Console.WriteLine(" \n -> Wybierz 0, aby dodać nowego domownika. \n -> Jeżeli chcesz zmodyfikować dane istniejącego domownika, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
-            string userInput = Console.ReadLine();
-
-            if (String.IsNullOrWhiteSpace(userInput))
-
-            {
-                Console.Clear();
-                return;
-            }
-            if (consoleID == 0)
-            {
-                int newUserID = usersList.Count == 0 ? 1 : usersList.Keys.Max() + 1;
-                Console.WriteLine("Imię: ");
-                string firstName = Console.ReadLine();
-                Console.WriteLine("Nazwisko: ");
-                string lastName = Console.ReadLine();
-                User addingUser = new User(newUserID, firstName, lastName);
-                usersList.Add(addingUser.UserID, addingUser);
-                return;
-            }
-            Console.Clear();
-            Console.WriteLine($"Wpisz nowe imię, zostaw puste żeby pominiąć({usersList[consoleID].UserFirstName}): ");
-            string newFirstName = Console.ReadLine();
-            usersList[consoleID].UserFirstName = String.IsNullOrWhiteSpace(newFirstName) ? usersList[consoleID].UserFirstName : newFirstName;
-            Console.Clear();
-            Console.WriteLine($"Wpisz nowe nazwisko, zostaw puste żeby pominiąć({usersList[consoleID].UserLastName}): ");
-            string newLastName = Console.ReadLine();
-            usersList[consoleID].UserLastName = String.IsNullOrWhiteSpace(newLastName) ? usersList[consoleID].UserLastName : newLastName;
-            Console.Clear();
-            Console.WriteLine($"Domownik jest aktywny({usersList[consoleID].UserIsActive})? (t/n), zostaw puste żeby nie zmieniać");
-            string newActiveStatus = Console.ReadLine().ToUpper();
-            if (newActiveStatus.Equals("T"))
-                usersList[consoleID].UserIsActive = true;
-            else if (newActiveStatus.Equals("N"))
-                usersList[consoleID].UserIsActive = false;
-            // koniec dodaj usera
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("\n");
-        }
-
-        public void ShowCategoriesList()
-        {
-            Console.Clear();
-            Console.WriteLine("Lista wszystkich kategorii:");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-
-            Console.WriteLine(" + [0]: dodaj kategorię");
-            printCategoriesList(false);
-            //dodaj kategorię
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby pominąć[??] nie wiem jak to opisać żeby miało sens"); //help
-            int consoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
-            Console.Clear();
-            if (consoleID == -1)
-            {
-                Console.Clear();
-                return;
-            }
-            if (consoleID == 0)
-            {
-                int newCategoryID = categoriesList.Count == 0 ? 1 : categoriesList.Keys.Max() + 1;
-                string incomeOrExpense = "";
-                while (true)
-                {
-                    Console.WriteLine("Dochód czy Wydatek? (d/w): ");
-                    incomeOrExpense = Console.ReadLine().ToUpper();
-                    if (incomeOrExpense.Equals("D"))
-                    {
-                        incomeOrExpense = "income";
-                        break;
-                    }
-                    else if (incomeOrExpense.Equals("W"))
-                    {
-                        incomeOrExpense = "expense";
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("nieprawidłowy wybór");
-                    }
-                }
-                Console.Clear();
-                Console.WriteLine("Nazwa kategorii: ");
-                string categoryName = Console.ReadLine();
-                Category addingCategory = new Category(newCategoryID, incomeOrExpense, categoryName);
-                categoriesList.Add(addingCategory.CategoryID, addingCategory);
-                return;
-            }
-            Console.Clear();
-            Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[consoleID].CategoryName}): ");
-            string newCategoryName = Console.ReadLine();
-            categoriesList[consoleID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[consoleID].CategoryName : newCategoryName;
-            Console.Clear();
-            Console.WriteLine($"Kategoria jest aktywna({categoriesList[consoleID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
-            string newActiveStatus = Console.ReadLine().ToUpper();
-            if (newActiveStatus.Equals("T"))
-                categoriesList[consoleID].IsActive = true;
-            else if (newActiveStatus.Equals("N"))
-                categoriesList[consoleID].IsActive = false;
-            // koniec dodawania kategorii
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("\n");
-        }
-
-        public void AddTransactionReworked()
-        {
-            Console.Clear();
-            int transactionID = transactionsList.Count == 0 ? 1 : transactionsList.Keys.Max() + 1;
-
-            Console.WriteLine("Wybierz kategorię transakcji z listy poniżej, wpisując jej numer: ");
-            printCategoriesList(true);
-            int selectedCategoryID = GetConsoleInput<Category>.GetUserInputID(categoriesList, true);
-            Console.Clear();
-            double transactionAmmount = GetConsoleInput.UserInputTransactionAmmount(false);
-            Console.Clear();
-            Console.Write("Wprowadź opis transakcji (pole opcjonalne): ");
-            string description = Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine("Do którego domownika należy ta transakcja?");
-            printUserList(false);
-            int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, true);
-            Console.Clear();
-            DateTimeOffset date = GetConsoleInput.ChooseDateOfTransaction();
-
-            transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmmount, description, usersList[selectedUserID], date));
-            Console.Clear();
-        }
-        public void EditTransactionReworked(int selectedTransactionID)
-        {
-            Console.Clear();
-            Console.WriteLine("Co zamierzasz zrobić z wybraną transakcją? [e] - edycja, [d] - usuwanie, [jakikolwiek inny klawisz] - wróć do menu");
-            transactionsList[selectedTransactionID].PrintProperties();
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
-            switch (keyInfo.Key)
-            {
-                case ConsoleKey.E:
-                    var oldTransaction = transactionsList[selectedTransactionID];
-
-                    Console.WriteLine($"Wybierz nową kategorie ({oldTransaction.TransactionCategory.CategoryName}), zostaw puste żeby nie zmieniać");
-                    printCategoriesList(true);
-                    int selectedNewCategoryID = GetConsoleInput<Category>.GetUserInputID(categoriesList, true);
-                    transactionsList[selectedTransactionID].TransactionCategory = selectedNewCategoryID == -1 ? transactionsList[selectedTransactionID].TransactionCategory : categoriesList[selectedNewCategoryID];
-                    Console.Clear();
-                    Console.WriteLine($"Wpisz nową kwotę ({oldTransaction.TransactionAmount}), zostaw puste żeby nie zmieniać");
-                    double newAmmount = GetConsoleInput.UserInputTransactionAmmount(true);
-                    transactionsList[selectedTransactionID].TransactionAmount = newAmmount == -1 ? transactionsList[selectedTransactionID].TransactionAmount : newAmmount;
-                    Console.Clear();
-                    Console.WriteLine($"Wpisz nowy opis transakcji {oldTransaction.TransactionDescription}, zostaw puste żeby nie zmieniać"); //ogarnąć żeby wyświetlało to estetycznie
-                    string newDescription = Console.ReadLine();
-                    transactionsList[selectedTransactionID].TransactionDescription = string.IsNullOrWhiteSpace(newDescription) ? transactionsList[selectedTransactionID].TransactionDescription : newDescription;
-                    Console.Clear();
-                    Console.WriteLine($"Przypisz tą transakcje do innego domownika ({oldTransaction.TransactionUser.UserFirstName} {oldTransaction.TransactionUser.UserLastName}), zostaw puste żeby nie zmieniać");
-                    printUserList(true);
-                    int selectedNewUserID = GetConsoleInput<User>.GetUserInputID(usersList, true);
-                    transactionsList[selectedTransactionID].TransactionUser = selectedNewUserID == -1 ? transactionsList[selectedTransactionID].TransactionUser : usersList[selectedNewUserID];
-                    Console.Clear();
-                    Console.WriteLine($"Zmienić datę tej transakcji? {oldTransaction.TransactionDate.ToString("dd-MM-yyyy")} (t/n)");
-                    if (Console.ReadLine().ToUpper().Equals("T"))
-                    {
-                        transactionsList[selectedTransactionID].TransactionDate = GetConsoleInput.ChooseDateOfTransaction();
-                    }
-                    break;
-
-                case ConsoleKey.D:
-                    transactionsList.Remove(selectedTransactionID);
-                    Console.WriteLine("Usuwanie zakończone!");
-                    break;
-
-                default:
-                    Console.WriteLine("Nieprawidłowy wybór");
-                    ManageProgramWorking();
-                    break;
-            }
-        }
-        public void PrintTransactionList()
-        {
-            PrintTransactionList(transactionsList);
-        }
-        public void PrintTransactionList(Dictionary<int, Transaction> customTransactionList)
-        {
-            Console.Clear();
-            Console.WriteLine("[0] - dodaj nową transakcje");
-            bool colorChanger = false;
-            foreach (KeyValuePair<int, Transaction> transaction in customTransactionList)
-            {
-                if (colorChanger)
-                {
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    }
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                    }
-                }
-                else if (!colorChanger)
-                {
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    }
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                }
-                Console.WriteLine($"[{transaction.Key}] : ");
-                transaction.Value.PrintProperties();
-                colorChanger = colorChanger ? false : true ;
-            }
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("Wybierz opcje/id, zostaw puste żeby wrócić do menu[??] nie wiem jak to opisać żeby miało sens"); //help
-            while (true)
-            {
-                string consoleInput = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(consoleInput))
-                {
-                    Console.Clear();
-                    return;
-                }
-                if (consoleInput.Equals("0"))
-                {
-                    AddTransactionReworked();
-                    return;
-                }
-                int selectedID = -1;
-                if (int.TryParse(consoleInput, out selectedID) && transactionsList.ContainsKey(selectedID))
-                {
-                    EditTransactionReworked(selectedID);
-                    return;
-                }
-                Console.WriteLine("podanego id nie ma na liscie transakcji");
-            }
-        }
-
-        public void ShowTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, User user)
-        {
-            // do implementacji (można uwzględnić uprawnienia - pole isAdmin)
-               ShowFilterOptions(user.UserIsAdmin);
-
-            // Krok 1. Wybór kryterium filtrowania (switch <-> klawisz wg filterOptions)
-            // Krok 2. Wygenerowanie nowej listy transakcji, powstałej w rezultacie przefiltrowania głównej listy.
-            // Krok 3. Wyświetlenie w konsoli tabeli zawierającej dane z przefiltrowanej listy transakcji.
-            // Krok 4. Obsłużenie możliwości wyczyszczenia okna i zastosowania nowego kryterium filtrowania.
-            // Krok 5. Obsłużenie możliwości powrotu do głównego menu lub sekcji modyfikacji transakcji.
-
-         // Przykład filtrowania (do potencjalnego wykorzystania)
-         //   Dictionary<string, int> dict = new Dictionary<string, int>() {
-         //   {"A", 1}, {"B", 2}, {"C", 3}, {"D", 4}, {"E", 5}
-         //   };
-
-         //   Dictionary<string, int> filtered = dict.Where(x => x.Value % 2 == 0)
-         //                       .ToDictionary(x => x.Key, x => x.Value);
-
-         //   Console.WriteLine(String.Join(", ", filtered));
-        }
-
-        private void PrintMenuHeader(User user)
+        private static void PrintMenuHeader(User user)
         {
             Console.Clear();
             Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
@@ -348,7 +40,7 @@ namespace BudgetApp
                 Console.WriteLine($" {option.Key} - {option.Value}");
             }
         }
-        public void ManageProgramWorking()
+        public static void ManageProgramWorking()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Czy chcesz wyjść z programu? \n Naciśnij [t] - tak, [n] - nie");
@@ -356,9 +48,9 @@ namespace BudgetApp
             if (Console.ReadKey().Key == ConsoleKey.T)
             {
                 Console.WriteLine("\n Dziękujemy za skorzystanie z aplikacji budżetowej");
-                BudgetService.SaveTransactionList(transactionsList, BudgetService.fileNames["Transactions"]);
-                BudgetService.SaveCategoryList(categoriesList, BudgetService.fileNames["Categories"]);
-                BudgetService.SaveUserList(usersList, BudgetService.fileNames["Users"]);
+                SaveTransactionList(transactionsList, fileNames["Transactions"]);
+                SaveCategoryList(categoriesList, fileNames["Categories"]);
+                SaveUserList(usersList, fileNames["Users"]);
                 _isProgramOpen = !_isProgramOpen;
             }
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -378,30 +70,33 @@ namespace BudgetApp
                     switch (keyInfo.Key)
                     {
                         case ConsoleKey.W:
-                            ShowUsersList();
+                            User.ManageUsers(usersList);
                             break;
 
                         case ConsoleKey.D:
-                            PrintTransactionList();
+                            Transaction.ManageTransactions(transactionsList, categoriesList, usersList);
                             break;
 
                         case ConsoleKey.F:
-                            ShowCategoriesList();
+                            Category.ManageCategories(categoriesList);
                             break;
+
                         case ConsoleKey.C:
-                            printUserList(false);
+                            User.PrintUsers(false, usersList);
                             int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
                             if (selectedUserID == -1)
                                 return;
-                            GetTransactionByUser(selectedUserID);
+                            Transaction.GetTransactionByUser(selectedUserID, transactionsList, categoriesList, usersList );
                             break;
+
                         case ConsoleKey.U:
-                            printCategoriesList(false);
+                            Category.PrintCategories(false, categoriesList);
                             int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
                             if (selectedConsoleID == -1)
                                 return;
-                            GetTransactionByCategory(selectedConsoleID);
+                            Transaction.GetTransactionByCategory(selectedConsoleID, transactionsList, categoriesList, usersList);
                             break;
+
                         default:
                             ManageProgramWorking();
                             break;
@@ -414,112 +109,6 @@ namespace BudgetApp
             }
                 Console.ReadKey();
         }
-        private void printUserList(bool onlyActive)
-        {
-            foreach (KeyValuePair<int, User> record in usersList)
-            {
-                if (onlyActive ? record.Value.IsActive : true)
-                {
-                    Console.WriteLine(
-                        $" + [{record.Key}]: " +
-                        $"{record.Value.UserFirstName} {record.Value.UserLastName} " +
-                        $"{(record.Value.UserIsActive ? "AKTYWNY" : "NIEAKTYWNY")} " +
-                        $"{(record.Value.UserIsAdmin ? "ADMINISTRATOR" : "USER")} ");
-                }
-            }
-        }
-        private void printCategoriesList(bool onlyActive)
-        {
-            foreach (KeyValuePair<int, Category> record in categoriesList)
-            {
-                if (onlyActive ? record.Value.IsActive : true)
-                {
-                    if (record.Value.CategoryType == "expense") Console.ForegroundColor = ConsoleColor.Red;
-                    else if (record.Value.CategoryType == "income") Console.ForegroundColor = ConsoleColor.Green;
-                    else Console.ForegroundColor = ConsoleColor.Yellow;
-
-                    Console.WriteLine(
-                            $" + {record.Key}: " +
-                            $"{record.Value.CategoryName} ({record.Value.CategoryType})");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-            }
-        }
-        private class GetConsoleInput<T> where T : ITransactionObject
-        {
-            internal static int GetUserInputID(Dictionary<int, T> transactionObjectDictionary, bool chooseOnlyActive)
-            {
-                Console.WriteLine("Wpisz id które chcesz wybrać:");
-                int returnID = -1;
-                while (true)
-                {
-                    string selectedID = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(selectedID) && !chooseOnlyActive)
-                    {
-                        return -1;
-                    }
-                    if (selectedID.Equals("0") && !chooseOnlyActive) //zwracanie 0 ma tylko sens w metodach które mają chooseOnlyActive = false
-                    {
-                        return 0;
-                    }
-                    if (int.TryParse(selectedID, out returnID))
-                    {
-                        if (transactionObjectDictionary.ContainsKey(returnID) && (chooseOnlyActive ? transactionObjectDictionary[returnID].IsActive : true))
-                        {
-                            return returnID;
-                        }
-                        Console.WriteLine($"na liście nie istnieje podane id: {selectedID}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"podana wartość {selectedID} jest niepoprawna, wpisz wartość numeryczną");
-                    }
-                }
-            }
-        }
-        private class GetConsoleInput
-        {
-            internal static DateTimeOffset ChooseDateOfTransaction()
-            {
-                Console.WriteLine("Jeśli transakcja jest z dzisiaj zostaw puste pole, w innym wypadku wprowadź datę w formacie DD-MM-RRRR");
-                while (true)
-                {
-                    string consoleInput = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(consoleInput))
-                    {
-                        return DateTimeOffset.Now;
-                    }
-                    DateTimeOffset returnDate = DateTimeOffset.MinValue;
-                    if (DateTimeOffset.TryParseExact(consoleInput.Trim(), "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out returnDate))
-                    {
-                        return returnDate;
-                    }
-                    Console.WriteLine($"Nieprawidłowy format daty! ma być w formacie DD-MM-RRRR, przykład - dzisiaj jest {DateTimeOffset.Now.ToString("dd-MM-yyyy")}");
-                }
-            }
-            internal static double UserInputTransactionAmmount(bool allowEmpty)
-            {
-                Console.WriteLine("Wprowadź kwotę PLN");
-                double transactionAmmount = -1;
-                while (true)
-                {
-                    string consoleInput = Console.ReadLine();
-                    if (allowEmpty ? string.IsNullOrWhiteSpace(consoleInput) : false)
-                    {
-                        return -1;
-                    }
-                    if (double.TryParse(consoleInput, out transactionAmmount))
-                    {
-                        if (transactionAmmount >= 0) //można dodawać transakcje o wartości 0 bo czemu nie
-                        {
-                            return transactionAmmount;
-                        }
-                        Console.WriteLine("transakcja nie może być ujemna, jeśli chcesz odjąć wybierz kategorię wydatek");
-                    }
-                    Console.WriteLine("w tym miejscu wpisujemy wyłącznie liczbę");
-                }
-            }
-        }
-
+       
     }
 }

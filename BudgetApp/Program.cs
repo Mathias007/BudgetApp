@@ -8,7 +8,7 @@ namespace BudgetApp
         public static void Main()
         {
 
-            Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
+            Budget budget = new();
 
             Menu menu = new();
 
@@ -38,17 +38,13 @@ namespace BudgetApp
 
             testUserlist();
         }
-        private static void testNowego()
-        {
-
-        }
         private static void testUserlist()
         {
-            Budget budget = new(Budget.LoadTransactionList(Budget.fileNames["Transactions"]));
+            Budget budget = new();
 
             Menu menu = new();
 
-            Category firstCategory = new(1, "income", "Wynagrodzenie"); //ID miały się zaczynać od 1
+            Category firstCategory = new(1, "income", "Wynagrodzenie");
             Category category1 = new(2, "income", "dochód z wynajętego mieszkania");
             Category category2 = new(3, "expense", "opłata za prąd");
             Category category3 = new(4, "expense", "zakupy spożywcze");
