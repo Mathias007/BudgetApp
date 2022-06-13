@@ -12,14 +12,21 @@ namespace BudgetApp
         public double _balance = 0;
         public Dictionary<string, (double, double)> _budgetStructure;
 
+        internal static Dictionary<int, Transaction> transactionsList;
+        internal static Dictionary<int, User> usersList;
+        internal static Dictionary<int, Category> categoriesList;
+
         public Dictionary<int, Transaction> BudgetData { get => _budget; set => _budget = value; }
         public string BudgetSelector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public double BudgetBalance { get => _balance; set => _balance = value; }
         public Dictionary<string, (double CategoryAmount, double CategoryPercentage)> BudgetStructure { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public Budget(Dictionary<int, Transaction> initialBudget)
+        public Budget()
         {
-            _budget = initialBudget;
+            _budget = LoadTransactionList(fileNames["Transactions"]);
+            transactionsList = LoadTransactionList(fileNames["Transactions"]);
+            usersList = LoadUserList(fileNames["Users"]);
+            categoriesList = LoadCategoryList(fileNames["Categories"]);
         }
 
         public void UpdateBudget(Dictionary<int, Transaction> newData) => _budget = newData;
