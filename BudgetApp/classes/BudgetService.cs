@@ -7,7 +7,7 @@ namespace BudgetApp
 {  
     public abstract class BudgetService : IBudgetService
     {
-        public static Dictionary<string, string> fileNames = new()
+        internal static Dictionary<string, string> fileNames = new()
         {
             { "Transactions", "TransactionsList.json" },
             { "Users", "UserList.json" },

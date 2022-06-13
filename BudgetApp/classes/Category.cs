@@ -23,50 +23,93 @@ namespace BudgetApp
             _id = id;
             _type = type;
             _name = name;
-            _isActive = true; //nie ma żadnego powodu żeby kategoria którą właśnie dodaliśmy była nieaktywna
+            _isActive = true;
         }
-        public static Category createCategory(Dictionary<int,Category> categoryList)
+        public static void PrintCategories(bool onlyActive, Dictionary<int, Category> categoriesList)
         {
-            int newCategoryID = categoryList.Count == 0 ? 1 : categoryList.Keys.Max() + 1;
-            string incomeOrExpense = "";
-            while (true)
+            foreach (KeyValuePair<int, Category> record in categoriesList)
             {
-                Console.WriteLine("Dochód czy Wydatek? (d/w): ");
-                incomeOrExpense = Console.ReadLine().ToUpper();
-                if (incomeOrExpense.Equals("D"))
+                if (!onlyActive || record.Value.IsActive)
                 {
-                    incomeOrExpense = "income";
-                    break;
-                }
-                else if (incomeOrExpense.Equals("W"))
-                {
-                    incomeOrExpense = "expense";
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("nieprawidłowy wybór");
+                    if (record.Value.CategoryType == "expense") Console.ForegroundColor = ConsoleColor.Red;
+                    else if (record.Value.CategoryType == "income") Console.ForegroundColor = ConsoleColor.Green;
+                    else Console.ForegroundColor = ConsoleColor.Yellow;
+
+                    Console.WriteLine(
+                            $" + {record.Key}: " +
+                            $"{record.Value.CategoryName} ({record.Value.CategoryType})");
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
             }
-            Console.Clear();
-            Console.WriteLine("Nazwa kategorii: ");
-            string categoryName = Console.ReadLine();
-            return new Category(newCategoryID, incomeOrExpense, categoryName);
         }
-        public static Category editCategory(Category categoryToBeEdited)
+
+        public static void ManageCategories(Dictionary<int, Category> categoriesList)
         {
             Console.Clear();
-            Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoryToBeEdited.CategoryName}): ");
-            string newCategoryName = Console.ReadLine();
-            categoryToBeEdited.CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoryToBeEdited.CategoryName : newCategoryName;
+            Console.WriteLine("Lista wszystkich kategorii:");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+
+            Console.WriteLine(" + [0]: dodaj kategorię");
+            PrintCategories(false, categoriesList);
+
+            Console.WriteLine(" \n -> Wybierz 0, aby dodać nową kategorię. \n -> Jeżeli chcesz zmodyfikować dane istniejącej kategorii, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste.");
+            int consoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
             Console.Clear();
-            Console.WriteLine($"Kategoria jest aktywna({categoryToBeEdited.IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
+            if (consoleID == -1)
+            {
+                Console.Clear();
+                return;
+            }
+            else if (consoleID == 0)
+            {
+                int newCategoryID = categoriesList.Count == 0 ? 1 : categoriesList.Keys.Max() + 1;
+                string incomeOrExpense;
+
+                while (true)
+                {
+                    Console.WriteLine("Dochód czy Wydatek? (d/w): ");
+                    incomeOrExpense = Console.ReadLine().ToUpper();
+                    if (incomeOrExpense.Equals("D"))
+                    {
+                        incomeOrExpense = "income";
+                        break;
+                    }
+                    else if (incomeOrExpense.Equals("W"))
+                    {
+                        incomeOrExpense = "expense";
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("nieprawidłowy wybór");
+                    }
+                }
+                Console.Clear();
+                Console.WriteLine("Nazwa kategorii: ");
+                string categoryName = Console.ReadLine();
+                Category addingCategory = new(newCategoryID, incomeOrExpense, categoryName);
+                categoriesList.Add(addingCategory.CategoryID, addingCategory);
+                return;
+            }
+
+            Console.Clear();
+
+            Console.WriteLine($"Wpisz nową nazwę kategorii, zostaw puste żeby pominąć({categoriesList[consoleID].CategoryName}): ");
+            string newCategoryName = Console.ReadLine();
+            categoriesList[consoleID].CategoryName = String.IsNullOrWhiteSpace(newCategoryName) ? categoriesList[consoleID].CategoryName : newCategoryName;
+            Console.Clear();
+
+            Console.WriteLine($"Kategoria jest aktywna({categoriesList[consoleID].IsActive})? (t/n), zostaw puste żeby nie zmieniać ");
             string newActiveStatus = Console.ReadLine().ToUpper();
+
             if (newActiveStatus.Equals("T"))
-                categoryToBeEdited.IsActive = true;
+                categoriesList[consoleID].IsActive = true;
             else if (newActiveStatus.Equals("N"))
-                categoryToBeEdited.IsActive = false;
-            return categoryToBeEdited;
-        }
+                categoriesList[consoleID].IsActive = false;
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("\n");
+        }   
     }
 }
