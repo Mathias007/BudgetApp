@@ -12,9 +12,12 @@ namespace BudgetApp
         User TransactionUser { get; set; }
         DateTimeOffset TransactionDate { get; set; }
 
-      //  static Transaction CreateNewTransaction(int transactionID, Dictionary<int, Category> categoriesList, User user) => throw new NotImplementedException($"{transactionID}, {categoriesList}, {user}");
-      //  static Transaction FindTransactionByID(Dictionary<int, Transaction> transactionsList) => throw new NotImplementedException($"{transactionsList[0]}");
-       // static Transaction ModifySelectedTransaction(Transaction modyfingTransaction, Dictionary<int, Category> categoriesList) => throw new NotImplementedException($"{modyfingTransaction.TransactionID}, {categoriesList[0]}");
-       // static Dictionary<int, Transaction> RemoveSelectedTransaction(int id, Dictionary<int, Transaction> transactionsList) => throw new NotImplementedException($"{transactionsList[id]}");
+        static Dictionary<int, Transaction> GetTransactionByCategory(int selectedCategoryID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static Dictionary<int, Transaction> GetTransactionByUser(int selectedUserID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static void AddTransactionReworked(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static void EditTransactionReworked(int selectedTransactionID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static void ManageTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList) => throw new NotImplementedException();
+
+        public void PrintProperties();   
     }
 }
