@@ -8,12 +8,12 @@ namespace BudgetApp
     {
         public static async Task Main()
         {
-            Spectre.Hello();
-            Spectre.PrintLiveTable();
-            Spectre.RenderTree();
+            // Spectre.Hello();
+            // Spectre.PrintLiveTable();
+            // Spectre.RenderTree();
             // await Spectre.LiveTableExample();
-            Spectre.TableCreator();
-            Spectre.ChartExample();
+            // Spectre.TableCreator();
+            // Spectre.ChartExample();
 
             Budget budget = new();
 
@@ -43,7 +43,7 @@ namespace BudgetApp
 
             // budget.EstablishBudgetStructure();
 
-           // testUserlist();
+           testUserlist();
         }
         private static void testUserlist()
         {

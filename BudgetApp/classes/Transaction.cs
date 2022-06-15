@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 
 namespace BudgetApp
 {
@@ -72,6 +74,7 @@ namespace BudgetApp
 
         public static void AddTransactionReworked(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
+
             Console.Clear();
             int transactionID = transactionsList.Count == 0 ? 1 : (transactionsList.Keys.Max() + 1);
 
@@ -145,36 +148,68 @@ namespace BudgetApp
         public static void ManageTransactions(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
             Console.Clear();
-            Console.WriteLine("[0] - dodaj nową transakcje");
-            bool colorChanger = false;
+
+            var transactionsTable = new Table();
+
+            transactionsTable
+                //.Border(TableBorder.HeavyHead)
+                .Border(TableBorder.Ascii)
+               //.BorderColor(Color.Red)
+                .Title(new TableTitle("Lista transakcji".ToUpper(), new Style(Color.Blue, Color.Black, Decoration.Underline)))
+                .AddColumn(new TableColumn("[darkorange][b]ID[/][/]").Footer("ID").Centered())
+                .AddColumn(new TableColumn("[darkorange][b]Kategoria[/][/]").Footer("Kategoria").Centered())
+                .AddColumn(new TableColumn("[darkorange][b]Wartość[/][/]").Footer("Wartość").Centered())
+                .AddColumn(new TableColumn("[darkorange][b]Opis[/][/]").Footer("Opis").Centered())
+                .AddColumn(new TableColumn("[darkorange][b]Domownik[/][/]").Footer("Domownik").Centered())
+                .AddColumn(new TableColumn("[darkorange][b]Data[/][/]").Footer("Data").Centered());
+
+
             foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
             {
-                if (colorChanger)
-                {
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    }
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                    }
-                }
-                else if (!colorChanger)
-                {
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    }
-                    if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                }
-                Console.WriteLine($"[{transaction.Key}] : ");
-                transaction.Value.PrintProperties();
-                colorChanger = !colorChanger;
+                transactionsTable.AddRow(
+                    transaction.Value.TransactionID.ToString(),
+                    transaction.Value.TransactionCategory.CategoryName.ToString(),
+                    $"{(transaction.Value.TransactionCategory.CategoryType == "income" ? "[green]" : "[red]")}{transaction.Value.TransactionAmount.ToString()}[/]",
+                    transaction.Value.TransactionDescription.ToString(),
+                    transaction.Value.TransactionUser.UserFirstName.ToString(),
+                    transaction.Value.TransactionDate.ToString()
+                 );
             }
+
+            AnsiConsole.Write(transactionsTable);
+
+            // Console.WriteLine("[0] - dodaj nową transakcje");
+            // bool colorChanger = false;
+
+
+            //foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+            //{
+            //    if (colorChanger)
+            //    {
+            //        if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
+            //        {
+            //            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            //        }
+            //        if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
+            //        {
+            //            Console.ForegroundColor = ConsoleColor.DarkRed;
+            //        }
+            //    }
+            //    else if (!colorChanger)
+            //    {
+            //        if (transaction.Value.TransactionCategory.CategoryType.Equals("income"))
+            //        {
+            //            Console.ForegroundColor = ConsoleColor.Green;
+            //        }
+            //        if (transaction.Value.TransactionCategory.CategoryType.Equals("expense"))
+            //        {
+            //            Console.ForegroundColor = ConsoleColor.Red;
+            //        }
+            //    }
+            //    Console.WriteLine($"[{transaction.Key}] : ");
+            //    transaction.Value.PrintProperties();
+            //    colorChanger = !colorChanger;
+            // }
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n -> Wybierz 0, aby dodać nową transakcję. \n -> Jeżeli chcesz zmodyfikować dane istniejącej transakacji, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste. "); //help
             while (true)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,27 +8,51 @@ namespace BudgetApp
     public class Menu : Budget, IMenu
     {
         private static bool _isProgramOpen = true;
-        private static readonly Dictionary<string, string> _programOptions = new()
+        private static readonly Dictionary<ConsoleKey, string> _programOptions = new()
         {
-            { "[w]", "Wyświetl listę domowników" },
-            { "[d]", "Wyświetl transakcje" },
-            { "[f]", "Wyświetl listę kategorii"},
-            { "[c]", "Wyświetl transakcje wg kategorii"},
-            { "[u]", "Wyświetl transakcje wg użytkownika" }
+            { ConsoleKey.W, "Domownicy" },
+            { ConsoleKey.D, "Transakcje" },
+            { ConsoleKey.F, "Kategorie"},
+            { ConsoleKey.C, "Wyświetl transakcje wg kategorii"},
+            { ConsoleKey.U, "Wyświetl transakcje wg użytkownika" }
         };
+        private static ConsoleKey _selector;
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
-        public Dictionary<string, string> ProgramOptions { get => _programOptions; }
+        public Dictionary<ConsoleKey, string> ProgramOptions { get => _programOptions; }
 
         private static void PrintMenuHeader(User user)
         {
             Console.Clear();
-            Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
+            // Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
 
-            foreach (KeyValuePair<string, string> option in _programOptions)
-            {
-                Console.WriteLine($" {option.Key} - {option.Value}");
-            }
+            //foreach (KeyValuePair<string, string> option in _programOptions)
+            //{
+            //    Console.WriteLine($" {option.Key} - {option.Value}");
+            //}
+
+            var font = FigletFont.Load(GetDatabasePath("assets/starwars.flf"));
+
+            AnsiConsole.Write(
+                new FigletText(font, "Budget")
+                    .Centered()
+                    .Color(Color.Red));
+            AnsiConsole.Write(
+                new FigletText(font, "App")
+                    .Centered()
+                    .Color(Color.Blue));
+
+            var selectedOption = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title($" [darkorange]Witamy [u]{user.UserFirstName} {user.UserLastName}[/] w aplikacji budżetowej![/] \n [green]Aby przejść dalej, wybierz opcję z listy poniżej:[/]")
+                    .PageSize(10)
+                    .MoreChoicesText("[grey](Przesuwaj w górę i w dół, a wybraną opcję zatwierdź klawiszem ENTER)[/]")
+                    .AddChoices(_programOptions.Values)
+                    );
+
+            AnsiConsole.WriteLine($"Wybrałeś opcję: {selectedOption}");
+
+            _selector = _programOptions.FirstOrDefault(option => option.Value == selectedOption).Key;
         }
         public static void ManageProgramWorking()
         {
@@ -52,11 +77,11 @@ namespace BudgetApp
                 {
                     PrintMenuHeader(user);
 
-                    ConsoleKeyInfo keyInfo = Console.ReadKey();
+                    // ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                     Console.Clear();
 
-                    switch (keyInfo.Key)
+                    switch (_selector)
                     {
                         case ConsoleKey.W:
                             User.ManageUsers(usersList);
