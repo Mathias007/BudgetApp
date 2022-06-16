@@ -82,7 +82,7 @@ namespace BudgetApp
 
             var categoriesPrompt = new SelectionPrompt<string>()
                 .PageSize(10)
-                .Title("Wybierz [green]kategorię[/] transakcji ([grey](Naciśnij [blue]spację[/], aby dokonać wyboru, a następnie [green]ENTER[/] do zatwierdzenia)[/])")
+                .Title("Wybierz [green]kategorię[/] transakcji \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                 .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy kategoriami)[/]");
             foreach (KeyValuePair<int, Category> category in categoriesList)
             {
@@ -109,7 +109,7 @@ namespace BudgetApp
 
             var usersPrompt = new SelectionPrompt<string>()
                 .PageSize(10)
-                .Title("Wybierz [green]użytkownika[/] ([grey](Naciśnij [blue]spację[/], aby dokonać wyboru, a następnie [green]ENTER[/] do zatwierdzenia)[/])")
+                .Title("Wybierz [green]użytkownika[/] \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                 .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami)[/]");
             foreach (KeyValuePair<int, User> user in usersList)
             {
@@ -121,7 +121,9 @@ namespace BudgetApp
 
             DateTimeOffset date = GetConsoleInput.ChooseDateOfTransaction();
 
-            transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], date));
+            Transaction addingTransaction = new(transactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], date);
+
+            transactionsList.Add(transactionID, addingTransaction);
 
             AnsiConsole.Write(new Rule("[yellow]Koniec[/]"));
 
@@ -161,12 +163,11 @@ namespace BudgetApp
                 case ConsoleKey.Z:
                     var oldTransaction = transactionsList[selectedTransactionID];
 
-
                     AnsiConsole.Write(new Rule("[yellow]Edytuj transakcję[/]"));
 
                     var categoriesPrompt = new SelectionPrompt<string>()
                         .PageSize(10)
-                        .Title("Wybierz [green]kategorię[/] transakcji ([grey]Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami. Naciśnij [green]ENTER[/] do zatwierdzenia[/])")
+                        .Title("Wybierz [green]kategorię[/] transakcji \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                         .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy kategoriami)[/]");
                     foreach (KeyValuePair<int, Category> category in categoriesList)
                     {
@@ -200,7 +201,7 @@ namespace BudgetApp
 
                     var usersPrompt = new SelectionPrompt<string>()
                         .PageSize(10)
-                        .Title("Wybierz [green]użytkownika[/] ([grey]Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami. Naciśnij [green]ENTER[/] do zatwierdzenia[/])")
+                        .Title("Wybierz [green]użytkownika[/] \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                         .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami)[/]");
                     foreach (KeyValuePair<int, User> user in usersList)
                     {
