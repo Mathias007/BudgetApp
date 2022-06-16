@@ -140,7 +140,7 @@ namespace BudgetApp
 
                 default:
                     Console.WriteLine("Nieprawidłowy wybór");
-                    Menu.ManageProgramWorking();
+                    Menu.ExitFromProgram();
                     break;
             }
         }
@@ -150,12 +150,15 @@ namespace BudgetApp
             Console.Clear();
 
             var transactionsTable = new Table();
+            var font = FigletFont.Load(BudgetService.GetDatabasePath("assets/ogre.flf"));
+
+            AnsiConsole.Write(
+                     new FigletText(font, "Transakcje")
+                    .Centered()
+                    .Color(Color.Blue));
 
             transactionsTable
-                //.Border(TableBorder.HeavyHead)
                 .Border(TableBorder.Ascii)
-               //.BorderColor(Color.Red)
-                .Title(new TableTitle("Lista transakcji".ToUpper(), new Style(Color.Blue, Color.Black, Decoration.Underline)))
                 .AddColumn(new TableColumn("[darkorange][b]ID[/][/]").Footer("ID").Centered())
                 .AddColumn(new TableColumn("[darkorange][b]Kategoria[/][/]").Footer("Kategoria").Centered())
                 .AddColumn(new TableColumn("[darkorange][b]Wartość[/][/]").Footer("Wartość").Centered())
@@ -169,14 +172,14 @@ namespace BudgetApp
                 transactionsTable.AddRow(
                     transaction.Value.TransactionID.ToString(),
                     transaction.Value.TransactionCategory.CategoryName.ToString(),
-                    $"{(transaction.Value.TransactionCategory.CategoryType == "income" ? "[green]" : "[red]")}{transaction.Value.TransactionAmount.ToString()}[/]",
+                    $"{(transaction.Value.TransactionCategory.CategoryType == "income" ? "[green]" : "[red]-")}{transaction.Value.TransactionAmount} zł[/]",
                     transaction.Value.TransactionDescription.ToString(),
                     transaction.Value.TransactionUser.UserFirstName.ToString(),
                     transaction.Value.TransactionDate.ToString()
                  );
             }
 
-            AnsiConsole.Write(transactionsTable);
+            AnsiConsole.Write(transactionsTable); 
 
             // Console.WriteLine("[0] - dodaj nową transakcje");
             // bool colorChanger = false;
@@ -210,29 +213,103 @@ namespace BudgetApp
             //    transaction.Value.PrintProperties();
             //    colorChanger = !colorChanger;
             // }
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("\n -> Wybierz 0, aby dodać nową transakcję. \n -> Jeżeli chcesz zmodyfikować dane istniejącej transakacji, wypisz jego numer ID. \n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste. "); //help
-            while (true)
+
+             Dictionary<ConsoleKey, string> transactionsOptions = new()
+             {
+                { ConsoleKey.W, "Dodaj nową transakcję" },
+                { ConsoleKey.D, "Modyfikuj istniejącą transakcję" },
+                { ConsoleKey.F, "Wyświetl transakcje wybranego domownika" },
+                { ConsoleKey.C, "Wyświetl transakcje danej kategorii" },
+                { ConsoleKey.U, "Wróć do menu" }
+             };
+
+            ConsoleKey selector;
+
+            var selectedOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title($" \t\t\t\t [darkorange]Co chcesz zrobić?[/]")
+                .PageSize(5)
+                .MoreChoicesText("[grey](Przesuwaj w górę i w dół, a wybraną opcję zatwierdź klawiszem ENTER)[/]")
+                .AddChoices(transactionsOptions.Values)
+        );
+
+            AnsiConsole.WriteLine($"Wybrałeś opcję: {selectedOption}");
+
+            selector = transactionsOptions.FirstOrDefault(option => option.Value == selectedOption).Key;
+
+            // Console.ForegroundColor = ConsoleColor.Gray;
+           // Console.WriteLine(
+                //"\n -> Wybierz 0, aby dodać nową transakcję. " +
+                //"\n Wybierz U, aby wyświetlić listę transakcji danego użytkownika " +
+                //"\n Wybierz C, aby wyświetlić listę transakcji danej kategorii " +
+                //"\n -> Jeżeli chcesz zmodyfikować dane istniejącej transakacji, wypisz jego numer ID. " +
+                //"\n -> Aby wrócić do głównego menu, naciśnij ENTER, pozostawiając pole puste. ");
+
+            switch (selector)
             {
-                string consoleInput = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(consoleInput))
-                {
+                case ConsoleKey.W:
+                    AddTransactionReworked(transactionsList, categoriesList, usersList);
+                    break;
+
+                case ConsoleKey.D:
+                    Console.Write("Podaj id wybranej transakcji: ");
+                    string inputID = Console.ReadLine();
+                    int selectedID = -1;
+                    if (int.TryParse(inputID, out selectedID) && transactionsList.ContainsKey(selectedID))
+                    {
+                        EditTransactionReworked(selectedID, transactionsList, categoriesList, usersList);
+                        return;
+                    }
+                    Console.WriteLine("podanego id nie ma na liscie transakcji");
+                    break;
+
+                case ConsoleKey.F:
+                    User.PrintUsers(false, usersList);
+                    int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
+                    if (selectedUserID == -1)
+                        return;
+                    GetTransactionByUser(selectedUserID, transactionsList, categoriesList, usersList );
+                    break;
+
+                case ConsoleKey.C:
+                    Category.PrintCategories(false, categoriesList);
+                    int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
+                    if (selectedConsoleID == -1)
+                        return;
+                    GetTransactionByCategory(selectedConsoleID, transactionsList, categoriesList, usersList);
+                    break;
+
+                case ConsoleKey.U:
                     Console.Clear();
                     return;
-                }
-                if (consoleInput.Equals("0"))
-                {
-                    AddTransactionReworked(transactionsList, categoriesList, usersList);
+
+                default:
+                    Console.Clear();
                     return;
-                }
-                int selectedID = -1;
-                if (int.TryParse(consoleInput, out selectedID) && transactionsList.ContainsKey(selectedID))
-                {
-                    EditTransactionReworked(selectedID, transactionsList, categoriesList, usersList);
-                    return;
-                }
-                Console.WriteLine("podanego id nie ma na liscie transakcji");
             }
+
+
+            //while (true)
+            //{
+            //    string consoleInput = Console.ReadLine();
+            //    if (string.IsNullOrWhiteSpace(consoleInput))
+            //    {
+            //        Console.Clear();
+            //        return;
+            //    }
+            //    if (consoleInput.Equals("0"))
+            //    {
+            //        AddTransactionReworked(transactionsList, categoriesList, usersList);
+            //        return;
+            //    }
+            //    int selectedID = -1;
+            //    if (int.TryParse(consoleInput, out selectedID) && transactionsList.ContainsKey(selectedID))
+            //    {
+            //        EditTransactionReworked(selectedID, transactionsList, categoriesList, usersList);
+            //        return;
+            //    }
+            //    Console.WriteLine("podanego id nie ma na liscie transakcji");
+            //}
         }
     }
 }

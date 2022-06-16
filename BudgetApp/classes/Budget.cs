@@ -30,6 +30,8 @@ namespace BudgetApp
 
         public void CalculateBalance()
         {
+            Console.Clear();
+
             foreach (KeyValuePair<int, Transaction> record in _budget) _balance += record.Value.TransactionAmount;
 
             Console.WriteLine($"Stan konta: {_balance}");

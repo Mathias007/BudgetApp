@@ -14,7 +14,7 @@ namespace BudgetApp
             { "Categories", "CategoriesList.json" },
         };
 
-        internal static string GetDatabasePath(string fileName)
+        public static string GetDatabasePath(string fileName)
         {
             return Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, $"..\\..\\..\\{fileName}"));
         }
