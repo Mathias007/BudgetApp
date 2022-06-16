@@ -1,16 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BudgetApp
 {
     class Program
     {
-        public static void Main()
+        public static async Task Main()
         {
+            // Spectre.Hello();
+            // Spectre.PrintLiveTable();
+            // Spectre.RenderTree();
+            // await Spectre.LiveTableExample();
+            // Spectre.TableCreator();
+            // Spectre.ChartExample();
 
             Budget budget = new();
 
-            Menu menu = new();
+            BudgetMenu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie");
             User firstUser = new(1, "Jan", "Kowalski", true, true);
@@ -36,13 +43,13 @@ namespace BudgetApp
 
             // budget.EstablishBudgetStructure();
 
-            testUserlist();
+           testUserlist();
         }
         private static void testUserlist()
         {
             Budget budget = new();
 
-            Menu menu = new();
+            BudgetMenu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie");
             Category category1 = new(2, "income", "dochód z wynajętego mieszkania");

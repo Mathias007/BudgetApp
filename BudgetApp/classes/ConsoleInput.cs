@@ -39,7 +39,7 @@ namespace BudgetApp
     {
         internal static DateTimeOffset ChooseDateOfTransaction()
         {
-            Console.WriteLine("Jeśli transakcja jest z dzisiaj zostaw puste pole, w innym wypadku wprowadź datę w formacie DD-MM-RRRR");
+            Console.Write("Jeśli transakcja jest z dzisiaj, zostaw puste pole, w innym wypadku wprowadź datę w formacie DD-MM-RRRR: ");
             while (true)
             {
                 string consoleInput = Console.ReadLine();
@@ -55,7 +55,7 @@ namespace BudgetApp
                 Console.WriteLine($"Nieprawidłowy format daty! ma być w formacie DD-MM-RRRR, przykład - dzisiaj jest {DateTimeOffset.Now.ToString("dd-MM-yyyy")}");
             }
         }
-        internal static double UserInputTransactionAmmount(bool allowEmpty)
+        internal static double UserInputTransactionAmount(bool allowEmpty)
         {
             Console.WriteLine("Wprowadź kwotę PLN");
             double transactionAmmount = -1;
