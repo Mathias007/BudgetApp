@@ -8,14 +8,18 @@ namespace BudgetApp
     public class Budget : BudgetService, IBudget
     {
         private double _balance = 0;
-        private Dictionary<string, (double, double)> _budgetStructure;
+        private static Dictionary<string, double> _incomeStructure = new();
+        private static Dictionary<string, double> _expenseStructure = new();
+
 
         internal static Dictionary<int, Transaction> transactionsList;
         internal static Dictionary<int, User> usersList;
         internal static Dictionary<int, Category> categoriesList;
 
         public double BudgetBalance { get => _balance; set => _balance = value; }
-        public Dictionary<string, (double CategoryAmount, double CategoryPercentage)> BudgetStructure { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Dictionary<string, double> IncomeStructure { get => _incomeStructure; set => _incomeStructure = value; }
+        public Dictionary<string, double> ExpenseStructure { get => _expenseStructure; set => _expenseStructure = value; }
+
 
         public Dictionary<int, Transaction> TransactionsList { get => transactionsList; set => transactionsList = value; }
         public Dictionary<int, Category> CategoriesList { get => categoriesList; set => categoriesList = value; }
@@ -30,42 +34,77 @@ namespace BudgetApp
 
         private void CalculateBalance()
         {
-            foreach (KeyValuePair<int, Transaction> record in transactionsList) _balance += record.Value.TransactionAmount;
+            _balance = 0;
+            foreach (KeyValuePair<int, Transaction> transaction in transactionsList) {
+                if (transaction.Value.TransactionCategory.CategoryType == "income") _balance += transaction.Value.TransactionAmount;
+                else _balance -= transaction.Value.TransactionAmount;
+            }
 
             Console.WriteLine($"Stan konta: {_balance}");
-            _balance = 0;
         }
 
-        private void EstablishBudgetStructure()
+        private static void EstablishBudgetStructure()
         {
-            // Krok 1. Zsumować kwoty w poszczególnych kategoriach.
-            //         - dla każdej kategorii w liście kategorii przefiltrować BudgetData,
-            //         - z pozyskanych transakcji zsumować wartości z Amount.
-            // Krok 2. Wyliczyć procentową wartość z wykorzystaniem BudgetBalance.
-            // Krok 3. Wygenerować słownik:
-            //         - nazwy transakcji jako klucze,
-            //         - krotka zawierająca sumy i procenty z ww. kroków jako wartości.
-            // Krok 4. Wyświetlić uporządkowaną tabelę w konsoli.
+            static int RandomizeNumber(int min, int max) => new Random().Next(min, max);
+            Color[] colors = { Color.Green, Color.Yellow, Color.Red };
 
-            _budgetStructure = new Dictionary<string, (double CategoryAmount, double CategoryPercentage)>()
+
+            foreach (KeyValuePair<int, Category> category in categoriesList)
             {
-                ["Wynagrodzenie"] = (4, 10),
-                ["Zakupy"] = (10, 20),
-                ["Media"] = (0, 23)
-            };
+                double categorySum = 0;
 
-            AnsiConsole.Write(new BarChart()
-                .Width(60)
-                .Label("[green bold underline]Number of fruits[/]")
-                .CenterLabel()
-                .AddItem("Apple", 12, Color.Yellow)
-                .AddItem("Orange", 54, Color.Green)
-                .AddItem("Banana", 33, Color.Red));
+                Dictionary<int, Transaction> selectedCategoryTransactions = new();
+                var selectedCategory = categoriesList[category.Key];
+                foreach (KeyValuePair<int, Transaction> transaction in transactionsList)
+                {
+                    if (selectedCategory.CategoryID.Equals(transaction.Value.TransactionCategory.CategoryID))
+                    {
+                        selectedCategoryTransactions.Add(transaction.Key, transaction.Value);
+                    }
+                }
 
-            foreach (KeyValuePair<string, (double amount, double percentage)> record in _budgetStructure)
-            {
-                Console.WriteLine($" + {record.Key}: {record.Value.amount} PLN ({record.Value.percentage}%)");
+                foreach (KeyValuePair<int, Transaction> transaction in selectedCategoryTransactions)
+                {
+                    categorySum += transaction.Value.TransactionAmount;
+                }
+                Console.WriteLine($"Dla kategorii {category.Value.CategoryName} suma wynosi {categorySum} zł.");
+
+                if (category.Value.CategoryType == "income") _incomeStructure.Add(category.Value.CategoryName, categorySum);
+                else _expenseStructure.Add(category.Value.CategoryName, categorySum);
             }
+
+            var incomeChart = new BarChart()
+                .Width(60)
+                .Label("[green bold underline]Struktura przychodów[/]")
+                .CenterLabel();
+
+
+                foreach (KeyValuePair<string, double> record in _incomeStructure)
+                {
+                    incomeChart.AddItem(record.Key.ToString(), record.Value, colors[RandomizeNumber(0, colors.Length)]);
+                }
+
+            AnsiConsole.Write(incomeChart);
+
+
+            var expenseChart = new BarChart()
+                .Width(60)
+                .Label("[red bold underline]Struktura wydatków[/]")
+                .CenterLabel();
+
+                foreach (KeyValuePair<string, double> record in _expenseStructure)
+                {
+                    expenseChart.AddItem(record.Key.ToString(), record.Value, colors[RandomizeNumber(0, colors.Length)]);
+                }
+
+            AnsiConsole.Write(expenseChart);
+
+        }
+
+        private static void ClearBudgetData()
+        {
+            _incomeStructure = new Dictionary<string, double>();
+            _expenseStructure = new Dictionary<string, double>();
         }
 
         public void ManageBudgetSummary()
@@ -74,6 +113,7 @@ namespace BudgetApp
 
             CalculateBalance();
             EstablishBudgetStructure();
+            ClearBudgetData();
 
             Console.ReadKey();
         }
