@@ -13,8 +13,10 @@ namespace BudgetApp
             { ConsoleKey.W, "Domownicy" },
             { ConsoleKey.D, "Transakcje" },
             { ConsoleKey.F, "Kategorie"},
-            { ConsoleKey.C, "Wyświetl transakcje wg kategorii"},
-            { ConsoleKey.U, "Wyświetl transakcje wg użytkownika" }
+            { ConsoleKey.C, "Podsumowanie"},
+            { ConsoleKey.U, "Wyjście"}
+           // { ConsoleKey.C, "Wyświetl transakcje wg kategorii"},
+           // { ConsoleKey.U, "Wyświetl transakcje wg użytkownika" }
         };
         private static ConsoleKey _selector;
 
@@ -38,23 +40,24 @@ namespace BudgetApp
                     .Centered()
                     .Color(Color.Red));
             AnsiConsole.Write(
-                new FigletText(font, "App")
-                    .Centered()
+                new FigletText(font, "App")                
+                    .Centered()                    
                     .Color(Color.Blue));
 
             var selectedOption = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title($" [darkorange]Witamy [u]{user.UserFirstName} {user.UserLastName}[/] w aplikacji budżetowej![/] \n [green]Aby przejść dalej, wybierz opcję z listy poniżej:[/]")
-                    .PageSize(10)
+                    .Title($" \t\t\t\t [darkorange]Witamy [u]{user.UserFirstName} {user.UserLastName}[/] w aplikacji budżetowej![/] \n \t\t\t\t [green]Aby przejść dalej, wybierz opcję z listy poniżej:[/]")
+                    .PageSize(5)
                     .MoreChoicesText("[grey](Przesuwaj w górę i w dół, a wybraną opcję zatwierdź klawiszem ENTER)[/]")
-                    .AddChoices(_programOptions.Values)
+                    .AddChoices(_programOptions.Values)                    
                     );
 
             AnsiConsole.WriteLine($"Wybrałeś opcję: {selectedOption}");
 
             _selector = _programOptions.FirstOrDefault(option => option.Value == selectedOption).Key;
         }
-        public static void ManageProgramWorking()
+
+        public static void ExitFromProgram()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Czy chcesz wyjść z programu? \n Naciśnij [t] - tak, [n] - nie");
@@ -96,30 +99,39 @@ namespace BudgetApp
                             break;
 
                         case ConsoleKey.C:
-                            User.PrintUsers(false, usersList);
-                            int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
-                            if (selectedUserID == -1)
-                                return;
-                            Transaction.GetTransactionByUser(selectedUserID, transactionsList, categoriesList, usersList );
+                            CalculateBalance();
+                            EstablishBudgetStructure();
                             break;
 
                         case ConsoleKey.U:
-                            Category.PrintCategories(false, categoriesList);
-                            int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
-                            if (selectedConsoleID == -1)
-                                return;
-                            Transaction.GetTransactionByCategory(selectedConsoleID, transactionsList, categoriesList, usersList);
+                            ExitFromProgram();
                             break;
 
+                        //case ConsoleKey.C:
+                        //    User.PrintUsers(false, usersList);
+                        //    int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
+                        //    if (selectedUserID == -1)
+                        //        return;
+                        //    Transaction.GetTransactionByUser(selectedUserID, transactionsList, categoriesList, usersList );
+                        //    break;
+
+                        //case ConsoleKey.U:
+                        //    Category.PrintCategories(false, categoriesList);
+                        //    int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
+                        //    if (selectedConsoleID == -1)
+                        //        return;
+                        //    Transaction.GetTransactionByCategory(selectedConsoleID, transactionsList, categoriesList, usersList);
+                        //    break;
+
                         default:
-                            ManageProgramWorking();
+                            ExitFromProgram();
                             break;
                     }
                 } while (_isProgramOpen);
             } else
             {
                 Console.WriteLine("Konto nieaktywne - brak uprawnień");
-                ManageProgramWorking();
+                ExitFromProgram();
             }
                 Console.ReadKey();
         }      
