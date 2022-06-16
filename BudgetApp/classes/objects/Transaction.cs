@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
-using Spectre.Console.Rendering;
 
 namespace BudgetApp
 {
@@ -72,7 +71,7 @@ namespace BudgetApp
             return selectedUserTransactions;
         }
 
-        public static void AddTransactionReworked(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
+        public static void AddNewTransaction(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
             Console.Clear();
 
@@ -82,7 +81,7 @@ namespace BudgetApp
 
             var categoriesPrompt = new SelectionPrompt<string>()
                 .PageSize(10)
-                .Title("Wybierz [green]kategorię[/] transakcji ([grey](Naciśnij [blue]spację[/], aby dokonać wyboru, a następnie [green]ENTER[/] do zatwierdzenia)[/])")
+                .Title("Wybierz [green]kategorię[/] transakcji \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                 .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy kategoriami)[/]");
             foreach (KeyValuePair<int, Category> category in categoriesList)
             {
@@ -109,7 +108,7 @@ namespace BudgetApp
 
             var usersPrompt = new SelectionPrompt<string>()
                 .PageSize(10)
-                .Title("Wybierz [green]użytkownika[/] ([grey](Naciśnij [blue]spację[/], aby dokonać wyboru, a następnie [green]ENTER[/] do zatwierdzenia)[/])")
+                .Title("Wybierz [green]użytkownika[/] \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                 .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami)[/]");
             foreach (KeyValuePair<int, User> user in usersList)
             {
@@ -121,7 +120,9 @@ namespace BudgetApp
 
             DateTimeOffset date = GetConsoleInput.ChooseDateOfTransaction();
 
-            transactionsList.Add(transactionID, new Transaction(transactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], date));
+            Transaction addingTransaction = new(transactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], date);
+
+            transactionsList.Add(transactionID, addingTransaction);
 
             AnsiConsole.Write(new Rule("[yellow]Koniec[/]"));
 
@@ -131,10 +132,8 @@ namespace BudgetApp
             Console.Clear();
         }
 
-        public static void EditTransactionReworked(int selectedTransactionID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
+        public static void EditExistingTransaction(int selectedTransactionID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
-           Console.Clear();
-
            Dictionary<ConsoleKey, string> editOptions = new()
                     {
                         { ConsoleKey.Z, "Edycja" },
@@ -161,12 +160,11 @@ namespace BudgetApp
                 case ConsoleKey.Z:
                     var oldTransaction = transactionsList[selectedTransactionID];
 
-
                     AnsiConsole.Write(new Rule("[yellow]Edytuj transakcję[/]"));
 
                     var categoriesPrompt = new SelectionPrompt<string>()
                         .PageSize(10)
-                        .Title("Wybierz [green]kategorię[/] transakcji ([grey]Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami. Naciśnij [green]ENTER[/] do zatwierdzenia[/])")
+                        .Title("Wybierz [green]kategorię[/] transakcji \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                         .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy kategoriami)[/]");
                     foreach (KeyValuePair<int, Category> category in categoriesList)
                     {
@@ -200,7 +198,7 @@ namespace BudgetApp
 
                     var usersPrompt = new SelectionPrompt<string>()
                         .PageSize(10)
-                        .Title("Wybierz [green]użytkownika[/] ([grey]Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami. Naciśnij [green]ENTER[/] do zatwierdzenia[/])")
+                        .Title("Wybierz [green]użytkownika[/] \n ([grey]Operuj strzałkami, a następnie naciśnij [green]ENTER[/] do zatwierdzenia)[/]")
                         .MoreChoicesText("[grey](Przesuwaj w górę i w dół, aby przełączać pomiędzy użytkownikami)[/]");
                     foreach (KeyValuePair<int, User> user in usersList)
                     {
@@ -327,7 +325,7 @@ namespace BudgetApp
             switch (selector)
             {
                 case ConsoleKey.W:
-                    AddTransactionReworked(transactionsList, categoriesList, usersList);
+                    AddNewTransaction(transactionsList, categoriesList, usersList);
                     break;
 
                 case ConsoleKey.D:
@@ -336,7 +334,7 @@ namespace BudgetApp
                     int selectedID = -1;
                     if (int.TryParse(inputID, out selectedID) && transactionsList.ContainsKey(selectedID))
                     {
-                        EditTransactionReworked(selectedID, transactionsList, categoriesList, usersList);
+                        EditExistingTransaction(selectedID, transactionsList, categoriesList, usersList);
                         return;
                     }
                     Console.WriteLine("Brak transakcji zapisanej pod wybraną pozycją!");

@@ -9,9 +9,9 @@ namespace BudgetApp
     {
         internal static Dictionary<string, string> fileNames = new()
         {
-            { "Transactions", "TransactionsList.json" },
-            { "Users", "UserList.json" },
-            { "Categories", "CategoriesList.json" },
+            { "Transactions", "db/TransactionsList.json" },
+            { "Users", "db/UserList.json" },
+            { "Categories", "db/CategoriesList.json" },
         };
 
         public Dictionary<string, string> FileNames { get => fileNames; }

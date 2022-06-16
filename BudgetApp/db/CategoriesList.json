@@ -1,0 +1,1 @@
+{"1":{"CategoryID":1,"CategoryType":"income","CategoryName":"praca","IsActive":true,"_id":1},"2":{"CategoryID":2,"CategoryType":"income","CategoryName":"inwestycje","IsActive":true,"_id":2},"3":{"CategoryID":3,"CategoryType":"expense","CategoryName":"zakupy","IsActive":true,"_id":3},"4":{"CategoryID":4,"CategoryType":"expense","CategoryName":"czynsz","IsActive":true,"_id":4}}

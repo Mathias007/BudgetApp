@@ -7,7 +7,6 @@ namespace BudgetApp
 {
     public class Budget : BudgetService, IBudget
     {
-        private Dictionary<int, Transaction> _budget;
         private double _balance = 0;
         private Dictionary<string, (double, double)> _budgetStructure;
 
@@ -15,21 +14,23 @@ namespace BudgetApp
         internal static Dictionary<int, User> usersList;
         internal static Dictionary<int, Category> categoriesList;
 
-        public Dictionary<int, Transaction> BudgetData { get => _budget; set => _budget = value; }
-        public string BudgetSelector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public double BudgetBalance { get => _balance; set => _balance = value; }
         public Dictionary<string, (double CategoryAmount, double CategoryPercentage)> BudgetStructure { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public Dictionary<int, Transaction> TransactionsList { get => transactionsList; set => transactionsList = value; }
+        public Dictionary<int, Category> CategoriesList { get => categoriesList; set => categoriesList = value; }
+        public Dictionary<int, User> UsersList { get => usersList; set => usersList = value; }
+
         public Budget()
         {
-            _budget = transactionsList = LoadTransactionList(fileNames["Transactions"]);
+            transactionsList = LoadTransactionList(fileNames["Transactions"]);
             usersList = LoadUserList(fileNames["Users"]);
             categoriesList = LoadCategoryList(fileNames["Categories"]);
         }
 
         private void CalculateBalance()
         {
-            foreach (KeyValuePair<int, Transaction> record in _budget) _balance += record.Value.TransactionAmount;
+            foreach (KeyValuePair<int, Transaction> record in transactionsList) _balance += record.Value.TransactionAmount;
 
             Console.WriteLine($"Stan konta: {_balance}");
             _balance = 0;
