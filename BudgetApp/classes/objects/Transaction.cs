@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
-using Spectre.Console.Rendering;
 
 namespace BudgetApp
 {
@@ -72,7 +71,7 @@ namespace BudgetApp
             return selectedUserTransactions;
         }
 
-        public static void AddTransactionReworked(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
+        public static void AddNewTransaction(Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
             Console.Clear();
 
@@ -133,10 +132,8 @@ namespace BudgetApp
             Console.Clear();
         }
 
-        public static void EditTransactionReworked(int selectedTransactionID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
+        public static void EditExistingTransaction(int selectedTransactionID, Dictionary<int, Transaction> transactionsList, Dictionary<int, Category> categoriesList, Dictionary<int, User> usersList)
         {
-           Console.Clear();
-
            Dictionary<ConsoleKey, string> editOptions = new()
                     {
                         { ConsoleKey.Z, "Edycja" },
@@ -328,7 +325,7 @@ namespace BudgetApp
             switch (selector)
             {
                 case ConsoleKey.W:
-                    AddTransactionReworked(transactionsList, categoriesList, usersList);
+                    AddNewTransaction(transactionsList, categoriesList, usersList);
                     break;
 
                 case ConsoleKey.D:
@@ -337,7 +334,7 @@ namespace BudgetApp
                     int selectedID = -1;
                     if (int.TryParse(inputID, out selectedID) && transactionsList.ContainsKey(selectedID))
                     {
-                        EditTransactionReworked(selectedID, transactionsList, categoriesList, usersList);
+                        EditExistingTransaction(selectedID, transactionsList, categoriesList, usersList);
                         return;
                     }
                     Console.WriteLine("Brak transakcji zapisanej pod wybraną pozycją!");

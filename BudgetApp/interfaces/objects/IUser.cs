@@ -11,6 +11,8 @@ namespace BudgetApp
         bool UserIsAdmin { get; set; }
 
         static void PrintUsers(bool onlyActive, Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static void AddNewUser(Dictionary<int, User> usersList) => throw new NotImplementedException();
+        static void EditExistingUser(int selectedUserID, Dictionary<int, User> usersList) => throw new NotImplementedException();
         static void ManageUsers(Dictionary<int, User> usersList) => throw new NotImplementedException();
     }
 }

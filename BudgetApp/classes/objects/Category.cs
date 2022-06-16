@@ -92,10 +92,7 @@ namespace BudgetApp
 
             string categoryName = AnsiConsole.Ask("Wprowadź [green]nazwę kategorii[/]: ", categoriesList[selectedCategoryID].CategoryName);
 
-            bool categoryIsActive;
-
-            if (AnsiConsole.Confirm("Czy kategoria ma być aktywna?")) categoryIsActive = true;            
-            else categoryIsActive = false;
+            bool categoryIsActive = AnsiConsole.Confirm("Czy kategoria ma być aktywna?");            
 
             AnsiConsole.Write(new Rule("[yellow]Koniec[/]"));
 
