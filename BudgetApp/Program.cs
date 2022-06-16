@@ -17,7 +17,7 @@ namespace BudgetApp
 
             Budget budget = new();
 
-            Menu menu = new();
+            BudgetMenu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie");
             User firstUser = new(1, "Jan", "Kowalski", true, true);
@@ -49,7 +49,7 @@ namespace BudgetApp
         {
             Budget budget = new();
 
-            Menu menu = new();
+            BudgetMenu menu = new();
 
             Category firstCategory = new(1, "income", "Wynagrodzenie");
             Category category1 = new(2, "income", "dochód z wynajętego mieszkania");

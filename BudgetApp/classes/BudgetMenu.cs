@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BudgetApp
 {
-    public class Menu : Budget, IMenu
+    public class BudgetMenu : Budget, IBudgetMenu
     {
         private static bool _isProgramOpen = true;
         private static readonly Dictionary<ConsoleKey, string> _programOptions = new()
@@ -15,23 +15,16 @@ namespace BudgetApp
             { ConsoleKey.F, "Kategorie"},
             { ConsoleKey.C, "Podsumowanie"},
             { ConsoleKey.U, "Wyjście"}
-           // { ConsoleKey.C, "Wyświetl transakcje wg kategorii"},
-           // { ConsoleKey.U, "Wyświetl transakcje wg użytkownika" }
         };
         private static ConsoleKey _selector;
 
         public bool IsProgramOpen { get => _isProgramOpen; set => _isProgramOpen = value; }
         public Dictionary<ConsoleKey, string> ProgramOptions { get => _programOptions; }
+        public ConsoleKey OptionSelector { get => _selector; set => _selector = value; }
 
         private static void PrintMenuHeader(User user)
         {
             Console.Clear();
-            // Console.WriteLine($"Witamy {user.UserFirstName} {user.UserLastName} w aplikacji budżetowej. Aby przejść dalej, wybierz opcję z listy poniżej:");
-
-            //foreach (KeyValuePair<string, string> option in _programOptions)
-            //{
-            //    Console.WriteLine($" {option.Key} - {option.Value}");
-            //}
 
             var font = FigletFont.Load(GetDatabasePath("assets/starwars.flf"));
 
@@ -59,19 +52,16 @@ namespace BudgetApp
 
         public static void ExitFromProgram()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Czy chcesz wyjść z programu? \n Naciśnij [t] - tak, [n] - nie");
-
-            if (Console.ReadKey().Key == ConsoleKey.T)
+            if (AnsiConsole.Confirm("Czy chcesz wyjść z programu?"))
             {
-                Console.WriteLine("\n Dziękujemy za skorzystanie z aplikacji budżetowej");
+                AnsiConsole.MarkupLine("Dziękujemy za skorzystanie z aplikacji budżetowej");
                 SaveTransactionList(transactionsList, fileNames["Transactions"]);
                 SaveCategoryList(categoriesList, fileNames["Categories"]);
                 SaveUserList(usersList, fileNames["Users"]);
                 _isProgramOpen = !_isProgramOpen;
             }
-            Console.ForegroundColor = ConsoleColor.Gray;
         }
+
         public void HandleMenu(User user)
         {
             if (user.UserIsActive)
@@ -79,8 +69,6 @@ namespace BudgetApp
                 do
                 {
                     PrintMenuHeader(user);
-
-                    // ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                     Console.Clear();
 
@@ -99,29 +87,12 @@ namespace BudgetApp
                             break;
 
                         case ConsoleKey.C:
-                            CalculateBalance();
-                            EstablishBudgetStructure();
+                            ManageBudgetSummary();
                             break;
 
                         case ConsoleKey.U:
                             ExitFromProgram();
                             break;
-
-                        //case ConsoleKey.C:
-                        //    User.PrintUsers(false, usersList);
-                        //    int selectedUserID = GetConsoleInput<User>.GetUserInputID(usersList, false);
-                        //    if (selectedUserID == -1)
-                        //        return;
-                        //    Transaction.GetTransactionByUser(selectedUserID, transactionsList, categoriesList, usersList );
-                        //    break;
-
-                        //case ConsoleKey.U:
-                        //    Category.PrintCategories(false, categoriesList);
-                        //    int selectedConsoleID = GetConsoleInput<Category>.GetUserInputID(categoriesList, false);
-                        //    if (selectedConsoleID == -1)
-                        //        return;
-                        //    Transaction.GetTransactionByCategory(selectedConsoleID, transactionsList, categoriesList, usersList);
-                        //    break;
 
                         default:
                             ExitFromProgram();

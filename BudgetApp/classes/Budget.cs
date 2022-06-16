@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,19 +27,15 @@ namespace BudgetApp
             categoriesList = LoadCategoryList(fileNames["Categories"]);
         }
 
-        public void UpdateBudget(Dictionary<int, Transaction> newData) => _budget = newData;
-
-        public void CalculateBalance()
+        private void CalculateBalance()
         {
-            Console.Clear();
-
             foreach (KeyValuePair<int, Transaction> record in _budget) _balance += record.Value.TransactionAmount;
 
             Console.WriteLine($"Stan konta: {_balance}");
             _balance = 0;
         }
 
-        public void EstablishBudgetStructure()
+        private void EstablishBudgetStructure()
         {
             // Krok 1. Zsumować kwoty w poszczególnych kategoriach.
             //         - dla każdej kategorii w liście kategorii przefiltrować BudgetData,
@@ -56,10 +53,28 @@ namespace BudgetApp
                 ["Media"] = (0, 23)
             };
 
+            AnsiConsole.Write(new BarChart()
+                .Width(60)
+                .Label("[green bold underline]Number of fruits[/]")
+                .CenterLabel()
+                .AddItem("Apple", 12, Color.Yellow)
+                .AddItem("Orange", 54, Color.Green)
+                .AddItem("Banana", 33, Color.Red));
+
             foreach (KeyValuePair<string, (double amount, double percentage)> record in _budgetStructure)
             {
                 Console.WriteLine($" + {record.Key}: {record.Value.amount} PLN ({record.Value.percentage}%)");
             }
+        }
+
+        public void ManageBudgetSummary()
+        {
+            Console.Clear();
+
+            CalculateBalance();
+            EstablishBudgetStructure();
+
+            Console.ReadKey();
         }
     }
 }
