@@ -1,7 +1,7 @@
 ﻿using Spectre.Console;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UtilityLibraries;
 
 namespace BudgetApp
 {
@@ -40,12 +40,12 @@ namespace BudgetApp
                 else _balance -= transaction.Value.TransactionAmount;
             }
 
-            Console.WriteLine($"Stan konta: {_balance}");
+            AnsiConsole.Markup($"Stan konta: [slowblink]{_balance} zł[/] \n");
         }
 
         private static void EstablishBudgetStructure()
         {
-            static int RandomizeNumber(int min, int max) => new Random().Next(min, max);
+           // static int RandomizeNumber(int min, int max) => new Random().Next(min, max);
             Color[] colors = { Color.Green, Color.Yellow, Color.Red };
 
 
@@ -67,34 +67,34 @@ namespace BudgetApp
                 {
                     categorySum += transaction.Value.TransactionAmount;
                 }
-                Console.WriteLine($"Dla kategorii {category.Value.CategoryName} suma wynosi {categorySum} zł.");
 
                 if (category.Value.CategoryType == "income") _incomeStructure.Add(category.Value.CategoryName, categorySum);
                 else _expenseStructure.Add(category.Value.CategoryName, categorySum);
             }
 
+            AnsiConsole.Write(new Rule("[yellow]Struktura przychodów[/]"));
+
             var incomeChart = new BarChart()
                 .Width(60)
-                .Label("[green bold underline]Struktura przychodów[/]")
                 .CenterLabel();
 
 
                 foreach (KeyValuePair<string, double> record in _incomeStructure)
                 {
-                    incomeChart.AddItem(record.Key.ToString(), record.Value, colors[RandomizeNumber(0, colors.Length)]);
+                    incomeChart.AddItem(record.Key.ToString(), record.Value, colors[UtilitiesLibrary.RandomizeNumber(0, colors.Length)]);
                 }
 
             AnsiConsole.Write(incomeChart);
 
+            AnsiConsole.Write(new Rule("[yellow]Struktura wydatków[/]"));
 
             var expenseChart = new BarChart()
                 .Width(60)
-                .Label("[red bold underline]Struktura wydatków[/]")
                 .CenterLabel();
 
                 foreach (KeyValuePair<string, double> record in _expenseStructure)
                 {
-                    expenseChart.AddItem(record.Key.ToString(), record.Value, colors[RandomizeNumber(0, colors.Length)]);
+                    expenseChart.AddItem(record.Key.ToString(), record.Value, colors[UtilitiesLibrary.RandomizeNumber(0, colors.Length)]);
                 }
 
             AnsiConsole.Write(expenseChart);
@@ -110,6 +110,14 @@ namespace BudgetApp
         public void ManageBudgetSummary()
         {
             Console.Clear();
+
+            var transactionsTable = new Table();
+            var font = FigletFont.Load(UtilitiesLibrary.GetDatabasePath("assets/ogre.flf"));
+
+            AnsiConsole.Write(
+                     new FigletText(font, "Podsumowanie")
+                    .Centered()
+                    .Color(Color.Blue));
 
             CalculateBalance();
             EstablishBudgetStructure();

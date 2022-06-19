@@ -1,24 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BudgetApp
 {
     class Program
     {
-        public static async Task Main()
+        public static void Main()
         {
-            // Spectre.Hello();
-            // Spectre.PrintLiveTable();
-            // Spectre.RenderTree();
-            // await Spectre.LiveTableExample();
-            // Spectre.TableCreator();
-            // Spectre.ChartExample();
-
-            Budget budget = new();
-
-            BudgetMenu menu = new();
-
             Category firstCategory = new(1, "income", "Wynagrodzenie");
             User firstUser = new(1, "Jan", "Kowalski", true, true);
 
@@ -35,17 +23,13 @@ namespace BudgetApp
             Dictionary<int, Category> categories = new();
             Dictionary<int, User> users = new();
 
-            categories.Add(firstCategory.CategoryID, firstCategory); 
+            categories.Add(firstCategory.CategoryID, firstCategory);
             users.Add(firstUser.UserID, firstUser);
             transactions.Add(firstTransaction.TransactionID, firstTransaction);
 
-            //menu.HandleMenu(users, transactions, categories, firstUser);
-
-            // budget.EstablishBudgetStructure();
-
-           testUserlist();
+            TestData();
         }
-        private static void testUserlist()
+        private static void TestData()
         {
             Budget budget = new();
 

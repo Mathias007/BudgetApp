@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UtilityLibraries;
 
 namespace BudgetApp
 {
@@ -26,7 +27,7 @@ namespace BudgetApp
         {
             Console.Clear();
 
-            var font = FigletFont.Load(GetDatabasePath("assets/starwars.flf"));
+            var font = FigletFont.Load(UtilitiesLibrary.GetDatabasePath("assets/starwars.flf"));
 
             AnsiConsole.Write(
                 new FigletText(font, "Budget")

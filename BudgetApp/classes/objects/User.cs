@@ -2,6 +2,7 @@ using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UtilityLibraries;
 
 namespace BudgetApp
 {
@@ -119,7 +120,7 @@ namespace BudgetApp
             Console.Clear();
 
             var usersTable = new Table();
-            var font = FigletFont.Load(BudgetService.GetDatabasePath("assets/ogre.flf"));
+            var font = FigletFont.Load(UtilitiesLibrary.GetDatabasePath("assets/ogre.flf"));
 
             AnsiConsole.Write(
                      new FigletText(font, "Domownicy")

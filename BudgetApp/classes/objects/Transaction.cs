@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
+using UtilityLibraries;
 
 namespace BudgetApp
 {
@@ -229,7 +230,7 @@ namespace BudgetApp
 
                     AnsiConsole.Write(new Markup("\n [bold darkorange]Transakcja została pomyślnie zedytowana! Naciśnij dowolny klawisz aby wrócić do menu.[/]"));
                    
-                    Transaction newTransaction = new(selectedTransactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], date);
+                    Transaction newTransaction = new(selectedTransactionID, categoriesList[selectedCategoryID], transactionAmount, description, usersList[selectedUserID], oldTransaction.TransactionDate);
 
                     transactionsList[selectedTransactionID] = newTransaction;
 
@@ -266,7 +267,7 @@ namespace BudgetApp
             Console.Clear();
 
             var transactionsTable = new Table();
-            var font = FigletFont.Load(BudgetService.GetDatabasePath("assets/ogre.flf"));
+            var font = FigletFont.Load(UtilitiesLibrary.GetDatabasePath("assets/ogre.flf"));
 
             AnsiConsole.Write(
                      new FigletText(font, "Transakcje")
