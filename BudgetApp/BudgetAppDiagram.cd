@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BudgetApp.Budget">
+    <Position X="5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAAAQAABAAEACAAAAIgCQAAIAAIAAAACAgAUIAAAAAA=</HashCode>
+      <FileName>classes\budget\Budget.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BudgetApp.BudgetMenu">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAEAAAIAAAAAAAAASAAAAAAAAAQAAgEAAAAAAAIAAA=</HashCode>
+      <FileName>classes\budget\BudgetMenu.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BudgetApp.BudgetService">
+    <Position X="7.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAKAAAAAAAAAoAAAEAAgABAAAA=</HashCode>
+      <FileName>classes\budget\BudgetService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BudgetApp.BudgetElement">
+    <Position X="4.5" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>classes\objects\BudgetElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BudgetApp.Category">
+    <Position X="0.5" Y="8.75" Width="2.75" />
+    <InheritanceLine Type="BudgetApp.BudgetElement" ManuallyRouted="true">
+      <Path>
+        <Point X="5.25" Y="15" />
+        <Point X="5.25" Y="14.625" />
+        <Point X="1.875" Y="14.625" />
+        <Point X="1.875" Y="12.809" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAIAACQEQgAAQAEIAAAAAAECAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>classes\objects\Category.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BudgetApp.Transaction">
+    <Position X="7.25" Y="8.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAQAAAABAAEBAAAAAAgEIAgEIAAgAJAEAAAAAA=</HashCode>
+      <FileName>classes\objects\Transaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BudgetApp.User">
+    <Position X="3.75" Y="9.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEIEAAAAAAAAAEAEYEAACgAEAAgAAAgAAAAAAIAAAI=</HashCode>
+      <FileName>classes\objects\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BudgetApp.Program">
+    <Position X="9.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BudgetApp.IBudget">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAEAAAAAAAAAAAAIAAAAAAACAgAAIAAAAAA=</HashCode>
+      <FileName>interfaces\budget\IBudget.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.IBudgetMenu">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAIAAAAAAAAAQAAAAAAAAAAAAgAAAAAAAAIAAA=</HashCode>
+      <FileName>interfaces\budget\IBudgetMenu.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.IBudgetService">
+    <Position X="9.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAACAAAAAAAAAoAAAAAAAABAAAA=</HashCode>
+      <FileName>interfaces\budget\IBudgetService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.ICategory">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACQEQgAAAAAAAAAAAAACAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>interfaces\objects\ICategory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.ITransaction">
+    <Position X="10" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAQAAAAAAAAAAAAAAAgEIAgEAAAgAIAEAAAAAA=</HashCode>
+      <FileName>interfaces\objects\ITransaction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.ITransactionObject">
+    <Position X="2.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>interfaces\objects\ITransactionObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BudgetApp.IUser">
+    <Position X="5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAQAAACgAAAAgAAAgAAAAAAIAAAI=</HashCode>
+      <FileName>interfaces\objects\IUser.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
