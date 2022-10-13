@@ -1,7 +1,7 @@
 # Budget App - Rozliczanie domowych wydatków.
 
 ## I. Wprowadzenie.
-Projekt aplikacji budżetowej do użytku domowego, przygotowany w języku `C#` na zajęcia z Programowania obiektowego w ramach studiów informatycznych na WSB w Chorzowie w semestr letnim 2021/2022.
+Projekt aplikacji budżetowej do użytku domowego, przygotowany w języku `C#` z wykorzystaniem paradygmatów programowania obiektowego.
 
 ## II. Kluczowe aspekty.
 Istotę projektu od strony technicznej stanowi praktyczne zastosowanie najważniejszych technik i założeń `OOP`, takich jak w szczególności:
